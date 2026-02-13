@@ -10,11 +10,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_13_005428) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_13_010153) do
   create_schema "scoreboard"
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "scoreboard.groups", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "created_by_id", null: false
+    t.string "invitation_token", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_groups_on_created_by_id"
+    t.index ["invitation_token"], name: "index_groups_on_invitation_token", unique: true
+  end
+
+  create_table "scoreboard.memberships", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "group_id", null: false
+    t.string "role", default: "member", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["group_id"], name: "index_memberships_on_group_id"
+    t.index ["user_id", "group_id"], name: "index_memberships_on_user_id_and_group_id", unique: true
+    t.index ["user_id"], name: "index_memberships_on_user_id"
+  end
 
   create_table "scoreboard.users", force: :cascade do |t|
     t.string "avatar_url"
@@ -29,5 +50,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_13_005428) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
   end
+
+  add_foreign_key "scoreboard.groups", "scoreboard.users", column: "created_by_id"
+  add_foreign_key "scoreboard.memberships", "scoreboard.groups"
+  add_foreign_key "scoreboard.memberships", "scoreboard.users"
 
 end

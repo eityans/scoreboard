@@ -2,6 +2,10 @@ class User < ApplicationRecord
   devise :database_authenticatable, :rememberable, :validatable,
          :omniauthable, omniauth_providers: [ :google_oauth2 ]
 
+  has_many :memberships, dependent: :destroy
+  has_many :groups, through: :memberships
+  has_many :players
+
   validates :display_name, presence: true
   validates :uid, presence: true, uniqueness: { scope: :provider }
 
