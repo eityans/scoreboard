@@ -18,7 +18,7 @@
       <%= form.text_field :note, class: "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition", placeholder: "任意" %>
     </div>
 
-    <div data-controller="nested-form">
+    <div data-controller="nested-form inline-player" data-inline-player-url-value="<%= group_players_path(@group) %>">
       <h3 class="text-sm font-medium text-gray-700 mb-2">参加者と収支</h3>
 
       <div data-nested-form-target="container" class="space-y-2">
@@ -35,10 +35,25 @@
         <% end %>
       </template>
 
-      <button type="button" data-action="nested-form#add"
-              class="mt-3 text-blue-600 hover:text-blue-800 text-sm font-medium transition">
-        + 参加者を追加
-      </button>
+      <div class="flex flex-wrap gap-3 mt-3">
+        <button type="button" data-action="nested-form#add"
+                class="text-blue-600 hover:text-blue-800 text-sm font-medium transition">
+          + 記録を追加
+        </button>
+        <button type="button" data-action="inline-player#toggle"
+                class="text-green-600 hover:text-green-800 text-sm font-medium transition">
+          + 新しいプレイヤー
+        </button>
+      </div>
+
+      <div data-inline-player-target="form" class="hidden mt-3 flex items-center gap-2">
+        <input type="text" data-inline-player-target="input" data-action="keydown.enter->inline-player#submit"
+               placeholder="プレイヤー名" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition">
+        <button type="button" data-action="inline-player#submit"
+                class="bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition cursor-pointer">追加</button>
+        <button type="button" data-action="inline-player#toggle"
+                class="text-gray-400 hover:text-gray-600 text-sm transition">キャンセル</button>
+      </div>
     </div>
 
     <%= form.submit poker_session.persisted? ? "更新する" : "記録する",

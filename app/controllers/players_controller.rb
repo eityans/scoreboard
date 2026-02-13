@@ -14,9 +14,15 @@ class PlayersController < ApplicationController
     @player = @group.players.build(player_params)
 
     if @player.save
-      redirect_to group_players_path(@group), notice: "「#{@player.display_name}」を追加しました"
+      respond_to do |format|
+        format.html { redirect_to group_players_path(@group), notice: "「#{@player.display_name}」を追加しました" }
+        format.json { render json: { id: @player.id, display_name: @player.display_name }, status: :created }
+      end
     else
-      render :new, status: :unprocessable_entity
+      respond_to do |format|
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: { errors: @player.errors.full_messages }, status: :unprocessable_entity }
+      end
     end
   end
 
