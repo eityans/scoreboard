@@ -1,58 +1,65 @@
 <div class="mb-6">
-  <h1 class="text-2xl font-bold mb-2"><%= @group.name %></h1>
-  <p class="text-sm text-gray-500">メンバー: <%= @group.users.count %>人</p>
+  <h1 class="text-2xl font-bold"><%= @group.name %></h1>
+  <p class="text-sm text-gray-500 mt-1">メンバー: <%= @group.users.count %>人</p>
 </div>
 
-<div class="flex gap-3 mb-6">
-  <%= link_to "セッション記録", new_group_poker_session_path(@group), class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700" %>
-  <%= link_to "リーダーボード", group_leaderboard_path(@group), class: "bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700" %>
-  <%= link_to "プレイヤー管理", group_players_path(@group), class: "bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300" %>
+<div class="flex flex-wrap gap-2 mb-6">
+  <%= link_to "セッション記録", new_group_poker_session_path(@group), class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium transition" %>
+  <%= link_to "リーダーボード", group_leaderboard_path(@group), class: "bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm font-medium transition" %>
+  <%= link_to "プレイヤー管理", group_players_path(@group), class: "bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 text-sm font-medium transition" %>
 </div>
 
-<div class="bg-white shadow rounded-lg p-4 mb-6">
-  <h2 class="text-lg font-semibold mb-3">最近のセッション</h2>
-  <% recent_sessions = @group.poker_sessions.order(played_on: :desc).limit(5) %>
-  <% if recent_sessions.any? %>
-    <div class="divide-y">
-      <% recent_sessions.each do |session| %>
-        <%= link_to group_poker_session_path(@group, session), class: "block py-3 hover:bg-gray-50 -mx-4 px-4" do %>
-          <div class="flex items-center justify-between">
-            <span class="font-medium"><%= session.played_on.strftime("%Y/%m/%d") %></span>
-            <span class="text-sm text-gray-500"><%= session.session_results.count %>人参加</span>
+<div class="grid md:grid-cols-2 gap-6">
+  <section class="bg-white shadow-sm rounded-xl border border-gray-100 p-5">
+    <h2 class="text-lg font-semibold mb-3">最近のセッション</h2>
+    <% recent_sessions = @group.poker_sessions.order(played_on: :desc).limit(5) %>
+    <% if recent_sessions.any? %>
+      <div class="divide-y divide-gray-50">
+        <% recent_sessions.each do |session| %>
+          <%= link_to group_poker_session_path(@group, session), class: "block py-3 hover:bg-gray-50 -mx-2 px-2 rounded-lg transition" do %>
+            <div class="flex items-center justify-between">
+              <span class="font-medium text-gray-900"><%= session.played_on.strftime("%Y/%m/%d") %></span>
+              <span class="text-xs text-gray-400"><%= session.session_results.count %>人参加</span>
+            </div>
+            <% if session.note.present? %>
+              <p class="text-xs text-gray-400 mt-0.5"><%= truncate(session.note, length: 40) %></p>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+      <%= link_to "すべてのセッション", group_poker_sessions_path(@group), class: "block mt-3 text-blue-600 hover:text-blue-800 text-sm font-medium" %>
+    <% else %>
+      <p class="text-gray-400 text-center py-4 text-sm">まだセッションがありません</p>
+    <% end %>
+  </section>
+
+  <div class="space-y-6">
+    <section class="bg-white shadow-sm rounded-xl border border-gray-100 p-5">
+      <h2 class="text-lg font-semibold mb-3">招待リンク</h2>
+      <div class="flex items-center gap-2">
+        <input type="text" value="<%= invitation_url(@group.invitation_token) %>" readonly
+               class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600" id="invitation-link">
+        <button onclick="navigator.clipboard.writeText(document.getElementById('invitation-link').value).then(() => { this.textContent = 'OK!'; setTimeout(() => this.textContent = 'コピー', 1500) })"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition cursor-pointer">コピー</button>
+      </div>
+    </section>
+
+    <section class="bg-white shadow-sm rounded-xl border border-gray-100 p-5">
+      <h2 class="text-lg font-semibold mb-3">メンバー</h2>
+      <div class="space-y-2">
+        <% @group.memberships.includes(:user).each do |membership| %>
+          <div class="flex items-center justify-between py-1.5">
+            <span class="text-sm text-gray-700"><%= membership.user.display_name %></span>
+            <% if membership.role == "owner" %>
+              <span class="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-medium">オーナー</span>
+            <% end %>
           </div>
         <% end %>
-      <% end %>
-    </div>
-    <%= link_to "すべてのセッション →", group_poker_sessions_path(@group), class: "block mt-3 text-blue-600 hover:text-blue-800 text-sm" %>
-  <% else %>
-    <p class="text-gray-500 text-center py-4">まだセッションがありません</p>
-  <% end %>
-</div>
-
-<div class="bg-white shadow rounded-lg p-4 mb-6">
-  <h2 class="text-lg font-semibold mb-2">招待リンク</h2>
-  <div class="flex items-center gap-2">
-    <input type="text" value="<%= invitation_url(@group.invitation_token) %>" readonly
-           class="flex-1 bg-gray-50 border rounded px-3 py-2 text-sm" id="invitation-link">
-    <button onclick="navigator.clipboard.writeText(document.getElementById('invitation-link').value).then(() => this.textContent = 'コピー済み!')"
-            class="bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded text-sm whitespace-nowrap">コピー</button>
+      </div>
+    </section>
   </div>
 </div>
 
-<div class="bg-white shadow rounded-lg p-4 mb-6">
-  <h2 class="text-lg font-semibold mb-3">メンバー</h2>
-  <ul class="divide-y">
-    <% @group.memberships.includes(:user).each do |membership| %>
-      <li class="py-2 flex items-center justify-between">
-        <span><%= membership.user.display_name %></span>
-        <% if membership.role == "owner" %>
-          <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">オーナー</span>
-        <% end %>
-      </li>
-    <% end %>
-  </ul>
-</div>
-
-<div>
-  <%= link_to "← グループ一覧", groups_path, class: "text-blue-600 hover:text-blue-800" %>
+<div class="mt-6">
+  <%= link_to "← グループ一覧", groups_path, class: "text-sm text-gray-500 hover:text-gray-700" %>
 </div>

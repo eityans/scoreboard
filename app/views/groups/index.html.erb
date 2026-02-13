@@ -1,20 +1,20 @@
 <div class="flex items-center justify-between mb-6">
   <h1 class="text-2xl font-bold">グループ一覧</h1>
-  <%= link_to "新規作成", new_group_path, class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700" %>
+  <%= link_to "新規作成", new_group_path, class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium transition" %>
 </div>
 
 <% if @groups.any? %>
-  <div class="grid gap-4">
+  <div class="space-y-3">
     <% @groups.each do |group| %>
-      <%= link_to group, class: "block bg-white shadow rounded-lg p-4 hover:shadow-md transition" do %>
-        <h2 class="text-lg font-semibold"><%= group.name %></h2>
-        <p class="text-sm text-gray-500">メンバー: <%= group.users.count %>人</p>
+      <%= link_to group, class: "block bg-white shadow-sm rounded-xl p-4 hover:shadow-md transition border border-gray-100" do %>
+        <h2 class="text-lg font-semibold text-gray-900"><%= group.name %></h2>
+        <p class="text-sm text-gray-500 mt-1">メンバー: <%= group.users.count %>人</p>
       <% end %>
     <% end %>
   </div>
 <% else %>
-  <div class="bg-white shadow rounded-lg p-8 text-center text-gray-500">
-    <p class="mb-4">まだグループがありません</p>
-    <%= link_to "最初のグループを作成する", new_group_path, class: "text-blue-600 hover:text-blue-800" %>
+  <div class="bg-white shadow-sm rounded-xl p-8 text-center text-gray-400 border border-gray-100">
+    <p class="mb-3">まだグループがありません</p>
+    <%= link_to "最初のグループを作成する", new_group_path, class: "text-blue-600 hover:text-blue-800 text-sm font-medium" %>
   </div>
 <% end %>

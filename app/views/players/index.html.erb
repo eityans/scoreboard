@@ -1,25 +1,25 @@
 <div class="flex items-center justify-between mb-6">
   <h1 class="text-2xl font-bold">プレイヤー一覧</h1>
-  <%= link_to "追加", new_group_player_path(@group), class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700" %>
+  <%= link_to "追加", new_group_player_path(@group), class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium transition" %>
 </div>
 
 <% if @players.any? %>
-  <div class="bg-white shadow rounded-lg divide-y">
+  <div class="bg-white shadow-sm rounded-xl border border-gray-100 divide-y divide-gray-50">
     <% @players.each do |player| %>
       <div class="p-4 flex items-center justify-between">
-        <span class="font-medium"><%= player.display_name %></span>
+        <span class="font-medium text-gray-900"><%= player.display_name %></span>
         <% if player.user.present? %>
-          <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">アカウント連携済み</span>
+          <span class="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full font-medium">アカウント連携済み</span>
         <% end %>
       </div>
     <% end %>
   </div>
 <% else %>
-  <div class="bg-white shadow rounded-lg p-8 text-center text-gray-500">
+  <div class="bg-white shadow-sm rounded-xl p-8 text-center text-gray-400 border border-gray-100">
     <p>まだプレイヤーがいません</p>
   </div>
 <% end %>
 
 <div class="mt-4">
-  <%= link_to "← #{@group.name}", group_path(@group), class: "text-blue-600 hover:text-blue-800" %>
+  <%= link_to "← #{@group.name}", group_path(@group), class: "text-sm text-gray-500 hover:text-gray-700" %>
 </div>

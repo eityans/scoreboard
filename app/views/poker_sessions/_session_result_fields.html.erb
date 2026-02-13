@@ -3,10 +3,14 @@
   <div class="flex-1">
     <%= form.collection_select :player_id, players, :id, :display_name,
         { prompt: "プレイヤーを選択" },
-        { class: "w-full border rounded px-3 py-2 text-sm" } %>
+        { class: "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" } %>
   </div>
   <div class="w-32">
-    <%= form.number_field :amount, placeholder: "収支(点)", class: "w-full border rounded px-3 py-2 text-sm text-right" %>
+    <%= form.number_field :amount, placeholder: "収支(点)", class: "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-right focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" %>
   </div>
-  <button type="button" data-action="nested-form#remove" class="text-red-500 hover:text-red-700 px-2">✕</button>
+  <button type="button" data-action="nested-form#remove" class="text-gray-400 hover:text-red-500 p-1 transition">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
 </div>

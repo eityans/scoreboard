@@ -1,58 +1,60 @@
-<h1 class="text-2xl font-bold mb-4">ダッシュボード</h1>
-<p class="text-gray-600 mb-6">ようこそ、<%= current_user.display_name %> さん！</p>
+<div class="mb-6">
+  <h1 class="text-2xl font-bold">ダッシュボード</h1>
+  <p class="text-gray-500 text-sm mt-1">ようこそ、<%= current_user.display_name %> さん</p>
+</div>
 
-<div class="grid md:grid-cols-2 gap-6 mb-8">
-  <div>
+<div class="grid md:grid-cols-2 gap-6">
+  <section>
     <div class="flex items-center justify-between mb-3">
       <h2 class="text-lg font-semibold">所属グループ</h2>
-      <%= link_to "新規作成", new_group_path, class: "bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm" %>
+      <%= link_to "新規作成", new_group_path, class: "bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 text-sm transition" %>
     </div>
 
     <% if @groups.any? %>
       <div class="space-y-3">
         <% @groups.each do |group| %>
-          <%= link_to group, class: "block bg-white shadow rounded-lg p-4 hover:shadow-md transition" do %>
+          <%= link_to group, class: "block bg-white shadow-sm rounded-xl p-4 hover:shadow-md transition border border-gray-100" do %>
             <div class="flex items-center justify-between mb-1">
-              <h3 class="font-semibold"><%= group.name %></h3>
-              <span class="text-xs text-gray-400"><%= group.poker_sessions.size %>回</span>
+              <h3 class="font-semibold text-gray-900"><%= group.name %></h3>
+              <span class="text-xs text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full"><%= group.poker_sessions.size %>回</span>
             </div>
             <p class="text-sm text-gray-500">メンバー: <%= group.users.size %>人</p>
           <% end %>
         <% end %>
       </div>
     <% else %>
-      <div class="bg-white shadow rounded-lg p-8 text-center text-gray-500">
-        <p class="mb-4">まだグループがありません</p>
-        <%= link_to "最初のグループを作成する", new_group_path, class: "text-blue-600 hover:text-blue-800" %>
+      <div class="bg-white shadow-sm rounded-xl p-8 text-center text-gray-400 border border-gray-100">
+        <p class="mb-3">まだグループがありません</p>
+        <%= link_to "最初のグループを作成する", new_group_path, class: "text-blue-600 hover:text-blue-800 text-sm font-medium" %>
       </div>
     <% end %>
-  </div>
+  </section>
 
-  <div>
+  <section>
     <h2 class="text-lg font-semibold mb-3">最近のセッション</h2>
 
     <% if @recent_sessions.any? %>
-      <div class="bg-white shadow rounded-lg divide-y">
+      <div class="bg-white shadow-sm rounded-xl border border-gray-100 divide-y divide-gray-50">
         <% @recent_sessions.each do |session| %>
-          <%= link_to group_poker_session_path(session.group, session), class: "block p-4 hover:bg-gray-50 transition" do %>
+          <%= link_to group_poker_session_path(session.group, session), class: "block p-4 hover:bg-gray-50 transition first:rounded-t-xl last:rounded-b-xl" do %>
             <div class="flex items-center justify-between mb-1">
-              <span class="font-medium"><%= session.played_on.strftime("%Y/%m/%d") %></span>
-              <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded"><%= session.group.name %></span>
+              <span class="font-medium text-gray-900"><%= session.played_on.strftime("%Y/%m/%d") %></span>
+              <span class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full"><%= session.group.name %></span>
             </div>
             <div class="flex items-center justify-between text-sm text-gray-500">
               <span><%= session.session_results.size %>人参加</span>
               <% total = session.session_results.sum(&:amount) %>
               <% if total != 0 %>
-                <span class="text-xs text-yellow-600">収支合計: <%= total > 0 ? "+" : "" %><%= number_with_delimiter(total) %>点</span>
+                <span class="text-xs text-yellow-600 font-medium">収支合計: <%= total > 0 ? "+" : "" %><%= number_with_delimiter(total) %>点</span>
               <% end %>
             </div>
           <% end %>
         <% end %>
       </div>
     <% else %>
-      <div class="bg-white shadow rounded-lg p-8 text-center text-gray-500">
+      <div class="bg-white shadow-sm rounded-xl p-8 text-center text-gray-400 border border-gray-100">
         <p>まだセッションがありません</p>
       </div>
     <% end %>
-  </div>
+  </section>
 </div>

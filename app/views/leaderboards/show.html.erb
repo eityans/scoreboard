@@ -1,46 +1,50 @@
 <h1 class="text-2xl font-bold mb-6"><%= @group.name %> - リーダーボード</h1>
 
 <% if @rankings.any? %>
-  <div class="bg-white shadow rounded-lg overflow-hidden">
-    <table class="w-full">
-      <thead class="bg-gray-50">
-        <tr>
-          <th class="px-4 py-3 text-left text-sm font-medium text-gray-500">順位</th>
-          <th class="px-4 py-3 text-left text-sm font-medium text-gray-500">プレイヤー</th>
-          <th class="px-4 py-3 text-right text-sm font-medium text-gray-500">参加回数</th>
-          <th class="px-4 py-3 text-right text-sm font-medium text-gray-500">累計収支</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y">
-        <% @rankings.each_with_index do |player, index| %>
-          <tr class="hover:bg-gray-50">
-            <td class="px-4 py-3 text-sm">
-              <% case index when 0 then %>
-                <span class="text-lg">🥇</span>
-              <% when 1 then %>
-                <span class="text-lg">🥈</span>
-              <% when 2 then %>
-                <span class="text-lg">🥉</span>
-              <% else %>
-                <span class="text-gray-500"><%= index + 1 %></span>
-              <% end %>
-            </td>
-            <td class="px-4 py-3 font-medium"><%= player.display_name %></td>
-            <td class="px-4 py-3 text-right text-sm text-gray-500"><%= player.session_count %>回</td>
-            <td class="px-4 py-3 text-right font-medium <%= player.total_amount.positive? ? 'text-green-600' : player.total_amount.negative? ? 'text-red-600' : 'text-gray-500' %>">
-              <%= player.total_amount.positive? ? "+" : "" %><%= number_with_delimiter(player.total_amount) %>点
-            </td>
+  <div class="bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="border-b border-gray-100">
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">順位</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">プレイヤー</th>
+            <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">参加</th>
+            <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">累計収支</th>
           </tr>
-        <% end %>
-      </tbody>
-    </table>
+        </thead>
+        <tbody class="divide-y divide-gray-50">
+          <% @rankings.each_with_index do |player, index| %>
+            <tr class="hover:bg-gray-50 transition">
+              <td class="px-4 py-3.5">
+                <% case index when 0 then %>
+                  <span class="text-lg">🥇</span>
+                <% when 1 then %>
+                  <span class="text-lg">🥈</span>
+                <% when 2 then %>
+                  <span class="text-lg">🥉</span>
+                <% else %>
+                  <span class="text-sm text-gray-400 pl-1"><%= index + 1 %></span>
+                <% end %>
+              </td>
+              <td class="px-4 py-3.5 font-medium text-gray-900"><%= player.display_name %></td>
+              <td class="px-4 py-3.5 text-right text-sm text-gray-400"><%= player.session_count %>回</td>
+              <td class="px-4 py-3.5 text-right">
+                <span class="font-mono font-semibold <%= player.total_amount.positive? ? 'text-green-600' : player.total_amount.negative? ? 'text-red-600' : 'text-gray-400' %>">
+                  <%= player.total_amount.positive? ? "+" : "" %><%= number_with_delimiter(player.total_amount) %>点
+                </span>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
   </div>
 <% else %>
-  <div class="bg-white shadow rounded-lg p-8 text-center text-gray-500">
+  <div class="bg-white shadow-sm rounded-xl p-8 text-center text-gray-400 border border-gray-100">
     <p>まだプレイヤーがいません</p>
   </div>
 <% end %>
 
 <div class="mt-4">
-  <%= link_to "← #{@group.name}", group_path(@group), class: "text-blue-600 hover:text-blue-800" %>
+  <%= link_to "← #{@group.name}", group_path(@group), class: "text-sm text-gray-500 hover:text-gray-700" %>
 </div>

@@ -1,39 +1,39 @@
 <div class="mb-6">
-  <h1 class="text-2xl font-bold mb-1"><%= @poker_session.played_on.strftime("%Y/%m/%d") %> のセッション</h1>
+  <h1 class="text-2xl font-bold"><%= @poker_session.played_on.strftime("%Y/%m/%d") %> のセッション</h1>
   <% if @poker_session.note.present? %>
-    <p class="text-gray-500"><%= @poker_session.note %></p>
+    <p class="text-gray-500 text-sm mt-1"><%= @poker_session.note %></p>
   <% end %>
 </div>
 
-<div class="bg-white shadow rounded-lg p-4 mb-6">
-  <h2 class="text-lg font-semibold mb-3">収支</h2>
+<div class="bg-white shadow-sm rounded-xl border border-gray-100 p-5 mb-6">
+  <h2 class="text-lg font-semibold mb-4">収支</h2>
   <% if @session_results.any? %>
-    <div class="divide-y">
+    <div class="space-y-3">
       <% @session_results.each do |result| %>
-        <div class="py-3 flex items-center justify-between">
-          <span class="font-medium"><%= result.player.display_name %></span>
-          <span class="font-mono text-lg <%= result.amount >= 0 ? 'text-green-600' : 'text-red-600' %>">
-            <%= result.amount >= 0 ? '+' : '' %><%= number_with_delimiter(result.amount) %> 点
+        <div class="flex items-center justify-between py-2">
+          <span class="font-medium text-gray-900"><%= result.player.display_name %></span>
+          <span class="font-mono text-lg font-semibold <%= result.amount >= 0 ? 'text-green-600' : 'text-red-600' %>">
+            <%= result.amount >= 0 ? "+" : "" %><%= number_with_delimiter(result.amount) %> 点
           </span>
         </div>
       <% end %>
     </div>
-    <div class="mt-4 pt-3 border-t flex items-center justify-between">
-      <span class="font-semibold">合計</span>
+    <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+      <span class="font-semibold text-gray-700">合計</span>
       <% total = @session_results.sum(&:amount) %>
-      <span class="font-mono font-semibold <%= total == 0 ? 'text-gray-600' : 'text-yellow-600' %>">
-        <%= total >= 0 ? '+' : '' %><%= number_with_delimiter(total) %> 点
+      <span class="font-mono font-semibold text-lg <%= total == 0 ? 'text-gray-500' : 'text-yellow-600' %>">
+        <%= total >= 0 ? "+" : "" %><%= number_with_delimiter(total) %> 点
       </span>
     </div>
   <% else %>
-    <p class="text-gray-500 text-center py-4">結果が記録されていません</p>
+    <p class="text-gray-400 text-center py-4 text-sm">結果が記録されていません</p>
   <% end %>
 </div>
 
-<div class="flex gap-3">
-  <%= link_to "編集", edit_group_poker_session_path(@group, @poker_session), class: "text-blue-600 hover:text-blue-800" %>
+<div class="flex flex-wrap items-center gap-3">
+  <%= link_to "編集", edit_group_poker_session_path(@group, @poker_session), class: "bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 text-sm font-medium transition" %>
   <%= button_to "削除", group_poker_session_path(@group, @poker_session), method: :delete,
         data: { turbo_confirm: "このセッションを削除しますか？" },
-        class: "text-red-600 hover:text-red-800" %>
-  <%= link_to "← セッション一覧", group_poker_sessions_path(@group), class: "text-blue-600 hover:text-blue-800 ml-auto" %>
+        class: "bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100 text-sm font-medium transition cursor-pointer" %>
+  <%= link_to "← セッション一覧", group_poker_sessions_path(@group), class: "text-sm text-gray-500 hover:text-gray-700 ml-auto" %>
 </div>

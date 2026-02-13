@@ -19,32 +19,63 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-gray-50">
-    <nav class="bg-white shadow">
-      <div class="container mx-auto px-4 py-3 flex items-center justify-between">
-        <%= link_to "Scoreboard", root_path, class: "text-xl font-bold text-gray-800" %>
-        <div>
+  <body class="bg-gray-50 min-h-screen flex flex-col" data-controller="navbar">
+    <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+      <div class="max-w-5xl mx-auto px-4">
+        <div class="flex items-center justify-between h-14">
+          <%= link_to root_path, class: "flex items-center gap-2 font-bold text-gray-900 text-lg" do %>
+            <span>&#9824;</span>
+            <span>Scoreboard</span>
+          <% end %>
+
           <% if user_signed_in? %>
-            <span class="text-sm text-gray-600 mr-3"><%= current_user.display_name %></span>
-            <%= button_to "ログアウト", destroy_user_session_path, method: :delete, class: "text-sm text-red-600 hover:text-red-800" %>
+            <div class="hidden sm:flex items-center gap-4">
+              <%= link_to "グループ", groups_path, class: "text-sm text-gray-600 hover:text-gray-900" %>
+              <div class="flex items-center gap-3 pl-4 border-l border-gray-200">
+                <span class="text-sm text-gray-600"><%= current_user.display_name %></span>
+                <%= button_to "ログアウト", destroy_user_session_path, method: :delete, class: "text-sm text-red-500 hover:text-red-700 cursor-pointer" %>
+              </div>
+            </div>
+
+            <button type="button" data-action="navbar#toggle" class="sm:hidden p-2 -mr-2 text-gray-600">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
           <% end %>
         </div>
+
+        <% if user_signed_in? %>
+          <div data-navbar-target="menu" class="hidden sm:hidden border-t border-gray-100 py-3 space-y-2">
+            <%= link_to "グループ", groups_path, class: "block py-2 text-sm text-gray-600 hover:text-gray-900" %>
+            <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+              <span class="text-sm text-gray-600"><%= current_user.display_name %></span>
+              <%= button_to "ログアウト", destroy_user_session_path, method: :delete, class: "text-sm text-red-500 hover:text-red-700 cursor-pointer" %>
+            </div>
+          </div>
+        <% end %>
       </div>
     </nav>
 
     <% if notice.present? %>
-      <div class="container mx-auto px-4 mt-4">
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded"><%= notice %></div>
+      <div class="max-w-5xl mx-auto px-4 mt-4">
+        <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm"><%= notice %></div>
       </div>
     <% end %>
     <% if alert.present? %>
-      <div class="container mx-auto px-4 mt-4">
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"><%= alert %></div>
+      <div class="max-w-5xl mx-auto px-4 mt-4">
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm"><%= alert %></div>
       </div>
     <% end %>
 
-    <main class="container mx-auto px-4 py-6">
+    <main class="flex-1 max-w-5xl mx-auto px-4 py-6 w-full">
       <%= yield %>
     </main>
+
+    <footer class="border-t border-gray-200 bg-white mt-auto">
+      <div class="max-w-5xl mx-auto px-4 py-4 text-center text-xs text-gray-400">
+        Scoreboard &mdash; ポーカー収支管理
+      </div>
+    </footer>
   </body>
 </html>
