@@ -29,7 +29,7 @@ console_command = '/rails/bin/rails console'
   [[http_service.checks]]
     interval = '10s'
     timeout = '2s'
-    grace_period = '5s'
+    grace_period = '30s'
     method = 'GET'
     path = '/up'
     protocol = 'http'
@@ -39,7 +39,7 @@ console_command = '/rails/bin/rails console'
       X-Forwarded-Proto = 'https'
 
 [[vm]]
-  memory = '256mb'
+  memory = '512mb'
   cpu_kind = 'shared'
   cpus = 1
-  memory_mb = 256
+  memory_mb = 512
