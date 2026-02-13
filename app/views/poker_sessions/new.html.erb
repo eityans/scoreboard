@@ -1,0 +1,5 @@
+<h1 class="text-2xl font-bold mb-6">セッション記録</h1>
+<%= render "form", poker_session: @poker_session, players: @players %>
+<div class="mt-4">
+  <%= link_to "← #{@group.name}", group_path(@group), class: "text-blue-600 hover:text-blue-800" %>
+</div>

@@ -1,0 +1,39 @@
+<div class="mb-6">
+  <h1 class="text-2xl font-bold mb-1"><%= @poker_session.played_on.strftime("%Y/%m/%d") %> のセッション</h1>
+  <% if @poker_session.note.present? %>
+    <p class="text-gray-500"><%= @poker_session.note %></p>
+  <% end %>
+</div>
+
+<div class="bg-white shadow rounded-lg p-4 mb-6">
+  <h2 class="text-lg font-semibold mb-3">収支</h2>
+  <% if @session_results.any? %>
+    <div class="divide-y">
+      <% @session_results.each do |result| %>
+        <div class="py-3 flex items-center justify-between">
+          <span class="font-medium"><%= result.player.display_name %></span>
+          <span class="font-mono text-lg <%= result.amount >= 0 ? 'text-green-600' : 'text-red-600' %>">
+            <%= result.amount >= 0 ? '+' : '' %><%= number_with_delimiter(result.amount) %> 点
+          </span>
+        </div>
+      <% end %>
+    </div>
+    <div class="mt-4 pt-3 border-t flex items-center justify-between">
+      <span class="font-semibold">合計</span>
+      <% total = @session_results.sum(&:amount) %>
+      <span class="font-mono font-semibold <%= total == 0 ? 'text-gray-600' : 'text-yellow-600' %>">
+        <%= total >= 0 ? '+' : '' %><%= number_with_delimiter(total) %> 点
+      </span>
+    </div>
+  <% else %>
+    <p class="text-gray-500 text-center py-4">結果が記録されていません</p>
+  <% end %>
+</div>
+
+<div class="flex gap-3">
+  <%= link_to "編集", edit_group_poker_session_path(@group, @poker_session), class: "text-blue-600 hover:text-blue-800" %>
+  <%= button_to "削除", group_poker_session_path(@group, @poker_session), method: :delete,
+        data: { turbo_confirm: "このセッションを削除しますか？" },
+        class: "text-red-600 hover:text-red-800" %>
+  <%= link_to "← セッション一覧", group_poker_sessions_path(@group), class: "text-blue-600 hover:text-blue-800 ml-auto" %>
+</div>

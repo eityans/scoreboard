@@ -1,0 +1,5 @@
+<h1 class="text-2xl font-bold mb-6">セッション編集</h1>
+<%= render "form", poker_session: @poker_session, players: @players %>
+<div class="mt-4">
+  <%= link_to "← セッション詳細", group_poker_session_path(@group, @poker_session), class: "text-blue-600 hover:text-blue-800" %>
+</div>

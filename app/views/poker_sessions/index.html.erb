@@ -1,0 +1,30 @@
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold">セッション一覧</h1>
+  <%= link_to "新規記録", new_group_poker_session_path(@group), class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700" %>
+</div>
+
+<% if @poker_sessions.any? %>
+  <div class="bg-white shadow rounded-lg divide-y">
+    <% @poker_sessions.each do |session| %>
+      <%= link_to group_poker_session_path(@group, session), class: "block p-4 hover:bg-gray-50" do %>
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="font-medium"><%= session.played_on.strftime("%Y/%m/%d") %></span>
+            <% if session.note.present? %>
+              <span class="text-sm text-gray-500 ml-2"><%= truncate(session.note, length: 30) %></span>
+            <% end %>
+          </div>
+          <span class="text-sm text-gray-500"><%= session.session_results.count %>人参加</span>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+<% else %>
+  <div class="bg-white shadow rounded-lg p-8 text-center text-gray-500">
+    <p>まだセッションがありません</p>
+  </div>
+<% end %>
+
+<div class="mt-4">
+  <%= link_to "← #{@group.name}", group_path(@group), class: "text-blue-600 hover:text-blue-800" %>
+</div>

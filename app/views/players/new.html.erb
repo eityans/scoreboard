@@ -1,0 +1,20 @@
+<h1 class="text-2xl font-bold mb-6">プレイヤー追加</h1>
+
+<div class="bg-white shadow rounded-lg p-6 max-w-md">
+  <%= form_with(model: [@group, @player], class: "space-y-4") do |form| %>
+    <% if @player.errors.any? %>
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+        <% @player.errors.full_messages.each do |message| %>
+          <p><%= message %></p>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div>
+      <%= form.label :display_name, "名前", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= form.text_field :display_name, class: "w-full border rounded-lg px-3 py-2", placeholder: "例: たろう" %>
+    </div>
+
+    <%= form.submit "追加する", class: "w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 cursor-pointer" %>
+  <% end %>
+</div>

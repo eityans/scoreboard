@@ -1,0 +1,12 @@
+<div data-nested-form-wrapper class="flex items-center gap-2">
+  <%= form.hidden_field :_destroy %>
+  <div class="flex-1">
+    <%= form.collection_select :player_id, players, :id, :display_name,
+        { prompt: "プレイヤーを選択" },
+        { class: "w-full border rounded px-3 py-2 text-sm" } %>
+  </div>
+  <div class="w-32">
+    <%= form.number_field :amount, placeholder: "収支(点)", class: "w-full border rounded px-3 py-2 text-sm text-right" %>
+  </div>
+  <button type="button" data-action="nested-form#remove" class="text-red-500 hover:text-red-700 px-2">✕</button>
+</div>
