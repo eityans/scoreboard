@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_13_010153) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_13_010610) do
   create_schema "scoreboard"
 
   # These are extensions that must be enabled in order to support this database
@@ -37,6 +37,40 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_13_010153) do
     t.index ["user_id"], name: "index_memberships_on_user_id"
   end
 
+  create_table "scoreboard.players", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "display_name", null: false
+    t.bigint "group_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["group_id", "user_id"], name: "index_players_on_group_id_and_user_id", unique: true, where: "(user_id IS NOT NULL)"
+    t.index ["group_id"], name: "index_players_on_group_id"
+    t.index ["user_id"], name: "index_players_on_user_id"
+  end
+
+  create_table "scoreboard.poker_sessions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "created_by_id", null: false
+    t.bigint "group_id", null: false
+    t.text "note"
+    t.date "played_on", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_poker_sessions_on_created_by_id"
+    t.index ["group_id", "played_on"], name: "index_poker_sessions_on_group_id_and_played_on"
+    t.index ["group_id"], name: "index_poker_sessions_on_group_id"
+  end
+
+  create_table "scoreboard.session_results", force: :cascade do |t|
+    t.integer "amount", null: false
+    t.datetime "created_at", null: false
+    t.bigint "player_id", null: false
+    t.bigint "poker_session_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["player_id"], name: "index_session_results_on_player_id"
+    t.index ["poker_session_id", "player_id"], name: "index_session_results_on_poker_session_id_and_player_id", unique: true
+    t.index ["poker_session_id"], name: "index_session_results_on_poker_session_id"
+  end
+
   create_table "scoreboard.users", force: :cascade do |t|
     t.string "avatar_url"
     t.datetime "created_at", null: false
@@ -54,5 +88,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_13_010153) do
   add_foreign_key "scoreboard.groups", "scoreboard.users", column: "created_by_id"
   add_foreign_key "scoreboard.memberships", "scoreboard.groups"
   add_foreign_key "scoreboard.memberships", "scoreboard.users"
+  add_foreign_key "scoreboard.players", "scoreboard.groups"
+  add_foreign_key "scoreboard.players", "scoreboard.users"
+  add_foreign_key "scoreboard.poker_sessions", "scoreboard.groups"
+  add_foreign_key "scoreboard.poker_sessions", "scoreboard.users", column: "created_by_id"
+  add_foreign_key "scoreboard.session_results", "scoreboard.players"
+  add_foreign_key "scoreboard.session_results", "scoreboard.poker_sessions"
 
 end
