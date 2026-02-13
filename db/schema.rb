@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_13_010610) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_13_020559) do
   create_schema "scoreboard"
 
   # These are extensions that must be enabled in order to support this database
@@ -43,6 +43,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_13_010610) do
     t.bigint "group_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index ["group_id", "display_name"], name: "index_players_on_group_id_and_display_name", unique: true
     t.index ["group_id", "user_id"], name: "index_players_on_group_id_and_user_id", unique: true, where: "(user_id IS NOT NULL)"
     t.index ["group_id"], name: "index_players_on_group_id"
     t.index ["user_id"], name: "index_players_on_user_id"
