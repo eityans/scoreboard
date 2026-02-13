@@ -1,0 +1,46 @@
+<h1 class="text-2xl font-bold mb-6"><%= @group.name %> - リーダーボード</h1>
+
+<% if @rankings.any? %>
+  <div class="bg-white shadow rounded-lg overflow-hidden">
+    <table class="w-full">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-4 py-3 text-left text-sm font-medium text-gray-500">順位</th>
+          <th class="px-4 py-3 text-left text-sm font-medium text-gray-500">プレイヤー</th>
+          <th class="px-4 py-3 text-right text-sm font-medium text-gray-500">参加回数</th>
+          <th class="px-4 py-3 text-right text-sm font-medium text-gray-500">累計収支</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y">
+        <% @rankings.each_with_index do |player, index| %>
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3 text-sm">
+              <% case index when 0 then %>
+                <span class="text-lg">🥇</span>
+              <% when 1 then %>
+                <span class="text-lg">🥈</span>
+              <% when 2 then %>
+                <span class="text-lg">🥉</span>
+              <% else %>
+                <span class="text-gray-500"><%= index + 1 %></span>
+              <% end %>
+            </td>
+            <td class="px-4 py-3 font-medium"><%= player.display_name %></td>
+            <td class="px-4 py-3 text-right text-sm text-gray-500"><%= player.session_count %>回</td>
+            <td class="px-4 py-3 text-right font-medium <%= player.total_amount.positive? ? 'text-green-600' : player.total_amount.negative? ? 'text-red-600' : 'text-gray-500' %>">
+              <%= player.total_amount.positive? ? "+" : "" %><%= number_with_delimiter(player.total_amount) %>点
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <div class="bg-white shadow rounded-lg p-8 text-center text-gray-500">
+    <p>まだプレイヤーがいません</p>
+  </div>
+<% end %>
+
+<div class="mt-4">
+  <%= link_to "← #{@group.name}", group_path(@group), class: "text-blue-600 hover:text-blue-800" %>
+</div>

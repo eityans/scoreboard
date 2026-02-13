@@ -5,6 +5,7 @@
 
 <div class="flex gap-3 mb-6">
   <%= link_to "セッション記録", new_group_poker_session_path(@group), class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700" %>
+  <%= link_to "リーダーボード", group_leaderboard_path(@group), class: "bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700" %>
   <%= link_to "プレイヤー管理", group_players_path(@group), class: "bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300" %>
 </div>
 
