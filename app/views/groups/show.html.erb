@@ -1,0 +1,32 @@
+<div class="mb-6">
+  <h1 class="text-2xl font-bold mb-2"><%= @group.name %></h1>
+  <p class="text-sm text-gray-500">メンバー: <%= @group.users.count %>人</p>
+</div>
+
+<div class="bg-white shadow rounded-lg p-4 mb-6">
+  <h2 class="text-lg font-semibold mb-2">招待リンク</h2>
+  <div class="flex items-center gap-2">
+    <input type="text" value="<%= invitation_url(@group.invitation_token) %>" readonly
+           class="flex-1 bg-gray-50 border rounded px-3 py-2 text-sm" id="invitation-link">
+    <button onclick="navigator.clipboard.writeText(document.getElementById('invitation-link').value).then(() => this.textContent = 'コピー済み!')"
+            class="bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded text-sm">コピー</button>
+  </div>
+</div>
+
+<div class="bg-white shadow rounded-lg p-4 mb-6">
+  <h2 class="text-lg font-semibold mb-3">メンバー</h2>
+  <ul class="divide-y">
+    <% @group.memberships.includes(:user).each do |membership| %>
+      <li class="py-2 flex items-center justify-between">
+        <span><%= membership.user.display_name %></span>
+        <% if membership.role == "owner" %>
+          <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">オーナー</span>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<div>
+  <%= link_to "← グループ一覧", groups_path, class: "text-blue-600 hover:text-blue-800" %>
+</div>
