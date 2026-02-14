@@ -13,7 +13,7 @@ class PokerSessionsController < ApplicationController
 
   def new
     @poker_session = @group.poker_sessions.build(played_on: Date.current)
-    @players = @group.players.order(:display_name)
+    @players = @group.players.active.order(:display_name)
   end
 
   def create
@@ -23,20 +23,20 @@ class PokerSessionsController < ApplicationController
     if @poker_session.save
       redirect_to group_poker_session_path(@group, @poker_session), notice: "セッションを記録しました"
     else
-      @players = @group.players.order(:display_name)
+      @players = @group.players.active.order(:display_name)
       render :new, status: :unprocessable_entity
     end
   end
 
   def edit
-    @players = @group.players.order(:display_name)
+    @players = @group.players.active.order(:display_name)
   end
 
   def update
     if @poker_session.update(poker_session_params)
       redirect_to group_poker_session_path(@group, @poker_session), notice: "セッションを更新しました"
     else
-      @players = @group.players.order(:display_name)
+      @players = @group.players.active.order(:display_name)
       render :edit, status: :unprocessable_entity
     end
   end

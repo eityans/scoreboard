@@ -3,7 +3,7 @@ class LeaderboardsController < ApplicationController
   before_action :authorize_member!
 
   def show
-    @rankings = @group.players
+    @rankings = @group.players.active
       .left_joins(:session_results)
       .select("players.*, COALESCE(SUM(session_results.amount), 0) AS total_amount, COUNT(session_results.id) AS session_count")
       .group("players.id")

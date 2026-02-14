@@ -3,7 +3,7 @@ class PlayersController < ApplicationController
   before_action :authorize_member!
 
   def index
-    @players = @group.players.order(:display_name)
+    @players = @group.players.active.order(:display_name)
   end
 
   def new
@@ -24,6 +24,12 @@ class PlayersController < ApplicationController
         format.json { render json: { errors: @player.errors.full_messages }, status: :unprocessable_entity }
       end
     end
+  end
+
+  def destroy
+    @player = @group.players.find(params[:id])
+    @player.discard
+    redirect_to group_players_path(@group), notice: "「#{@player.display_name}」を削除しました"
   end
 
   private

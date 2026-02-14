@@ -45,6 +45,34 @@ RSpec.describe "Players" do
     end
   end
 
+  describe "DELETE /groups/:group_id/players/:id" do
+    let!(:player) { create(:player, group: group) }
+
+    it "soft deletes the player" do
+      delete group_player_path(group, player)
+      expect(player.reload.discarded_at).to be_present
+    end
+
+    it "does not destroy the player record" do
+      expect {
+        delete group_player_path(group, player)
+      }.not_to change(Player, :count)
+    end
+
+    it "preserves associated session results" do
+      session = create(:poker_session, group: group, created_by: user)
+      result = create(:session_result, poker_session: session, player: player)
+
+      delete group_player_path(group, player)
+      expect(SessionResult.find_by(id: result.id)).to be_present
+    end
+
+    it "redirects to players index" do
+      delete group_player_path(group, player)
+      expect(response).to redirect_to(group_players_path(group))
+    end
+  end
+
   context "when user is not a member" do
     let(:other_group) { create(:group) }
 

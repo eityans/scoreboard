@@ -7,10 +7,15 @@
   <div class="bg-white shadow-sm rounded-xl border border-gray-100 divide-y divide-gray-50">
     <% @players.each do |player| %>
       <div class="p-4 flex items-center justify-between">
-        <span class="font-medium text-gray-900"><%= player.display_name %></span>
-        <% if player.user.present? %>
-          <span class="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full font-medium">アカウント連携済み</span>
-        <% end %>
+        <div class="flex items-center gap-2">
+          <span class="font-medium text-gray-900"><%= player.display_name %></span>
+          <% if player.user.present? %>
+            <span class="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full font-medium">アカウント連携済み</span>
+          <% end %>
+        </div>
+        <%= button_to "削除", group_player_path(@group, player), method: :delete,
+              data: { turbo_confirm: "「#{player.display_name}」を削除しますか？過去の記録は残ります。" },
+              class: "text-sm text-gray-400 hover:text-red-500 transition cursor-pointer" %>
       </div>
     <% end %>
   </div>

@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   resources :groups, only: [ :index, :show, :new, :create ] do
     resources :poker_sessions
-    resources :players, only: [ :index, :new, :create ]
+    resources :players, only: [ :index, :new, :create, :destroy ]
     resource :leaderboard, only: [ :show ]
   end
 
