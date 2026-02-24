@@ -26,7 +26,7 @@ class LeaderboardsController < ApplicationController
       session.session_results.each do |result|
         next if result.player.discarded?
         name = result.player.display_name
-        all_data[name] ||= [[0, 0]]
+        all_data[name] ||= [ [ 0, 0 ] ]
         cumulative[name] += result.amount
         participation_count[name] += 1
       end
