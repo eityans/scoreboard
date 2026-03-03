@@ -95,14 +95,8 @@ jobs:
         with:
           bundler-cache: true
 
-      - name: Create database
-        run: bin/rails db:create
-
-      - name: Create scoreboard schema
-        run: psql $DATABASE_URL -c "CREATE SCHEMA IF NOT EXISTS scoreboard"
-
-      - name: Load schema and migrate
-        run: bin/rails db:schema:load
+      - name: Prepare database
+        run: bin/rails db:prepare
 
       - name: Run tests
         run: bundle exec rspec
