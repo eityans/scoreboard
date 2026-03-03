@@ -1,68 +1,82 @@
 <h1 class="text-2xl font-bold mb-6"><%= @group.name %> - リーダーボード</h1>
 
-<% if @rankings.any? %>
-  <%= turbo_frame_tag "chart" do %>
-    <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-4 mb-6">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-sm font-medium text-gray-500">累計収支推移</h2>
-        <%= form_with url: group_leaderboard_path(@group), method: :get, data: { turbo_frame: "chart" } do |f| %>
+<%= turbo_frame_tag "leaderboard" do %>
+  <% if @quarters.any? %>
+    <div class="flex flex-wrap items-center gap-3 mb-6">
+      <%= form_with url: group_leaderboard_path(@group), method: :get, data: { turbo_frame: "leaderboard" } do |f| %>
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="flex items-center gap-1">
+            <label for="quarter" class="text-xs text-gray-500">期間</label>
+            <%= f.select :quarter,
+                  @quarters.map { |q| [q, q] } + [["全期間", "all"]],
+                  { selected: @quarter || "all" },
+                  { id: "quarter", class: "text-sm border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500", onchange: "this.form.requestSubmit()" } %>
+          </div>
           <div class="flex items-center gap-1">
             <%= f.number_field :min_sessions, value: @min_sessions, min: 1, step: 1,
                   class: "w-16 text-sm text-center border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500",
                   onchange: "this.form.requestSubmit()" %>
             <span class="text-xs text-gray-500">回以上参加</span>
           </div>
-        <% end %>
-      </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-4 mb-6">
+      <h2 class="text-sm font-medium text-gray-500 mb-2"><%= @quarter || "全期間" %> 収支推移</h2>
       <% if @chart_data.any? %>
-        <%= line_chart @chart_data, xtitle: "セッション", ytitle: "累計 (点)", points: false, curve: false, legend: "bottom", min: @chart_min, max: @chart_max, height: "500px" %>
+        <%= line_chart @chart_data, xtitle: "セッション", ytitle: "累計 (点)", points: false, curve: false, legend: "bottom", min: @chart_min, max: @chart_max, height: "500px",
+              library: { scales: { x: { ticks: { stepSize: 1 } } } } %>
       <% else %>
         <p class="text-center text-gray-400 py-8">条件に該当するプレイヤーがいません</p>
       <% end %>
     </div>
   <% end %>
-  <div class="bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
-    <div class="overflow-x-auto">
-      <table class="w-full">
-        <thead>
-          <tr class="border-b border-gray-100">
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">順位</th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">プレイヤー</th>
-            <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">参加</th>
-            <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">累計収支</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-50">
-          <% @rankings.each_with_index do |player, index| %>
-            <tr class="hover:bg-gray-50 transition">
-              <td class="px-4 py-3.5">
-                <% case index when 0 then %>
-                  <span class="text-lg">🥇</span>
-                <% when 1 then %>
-                  <span class="text-lg">🥈</span>
-                <% when 2 then %>
-                  <span class="text-lg">🥉</span>
-                <% else %>
-                  <span class="text-sm text-gray-400 pl-1"><%= index + 1 %></span>
-                <% end %>
-              </td>
-              <td class="px-4 py-3.5 font-medium text-gray-900"><%= player.display_name %></td>
-              <td class="px-4 py-3.5 text-right text-sm text-gray-400"><%= player.session_count %>回</td>
-              <td class="px-4 py-3.5 text-right">
-                <span class="font-mono font-semibold <%= player.total_amount.positive? ? 'text-green-600' : player.total_amount.negative? ? 'text-red-600' : 'text-gray-400' %>">
-                  <%= player.total_amount.positive? ? "+" : "" %><%= number_with_delimiter(player.total_amount) %>点
-                </span>
-              </td>
+
+  <% if @rankings.any? %>
+    <div class="bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-gray-100">
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">順位</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">プレイヤー</th>
+              <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">参加</th>
+              <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">累計収支</th>
             </tr>
-          <% end %>
-        </tbody>
-      </table>
+          </thead>
+          <tbody class="divide-y divide-gray-50">
+            <% @rankings.each_with_index do |player, index| %>
+              <tr class="hover:bg-gray-50 transition">
+                <td class="px-4 py-3.5">
+                  <% case index when 0 then %>
+                    <span class="text-lg">🥇</span>
+                  <% when 1 then %>
+                    <span class="text-lg">🥈</span>
+                  <% when 2 then %>
+                    <span class="text-lg">🥉</span>
+                  <% else %>
+                    <span class="text-sm text-gray-400 pl-1"><%= index + 1 %></span>
+                  <% end %>
+                </td>
+                <td class="px-4 py-3.5 font-medium text-gray-900"><%= player.display_name %></td>
+                <td class="px-4 py-3.5 text-right text-sm text-gray-400"><%= player.session_count %>回</td>
+                <td class="px-4 py-3.5 text-right">
+                  <span class="font-mono font-semibold <%= player.total_amount.positive? ? 'text-green-600' : player.total_amount.negative? ? 'text-red-600' : 'text-gray-400' %>">
+                    <%= player.total_amount.positive? ? "+" : "" %><%= number_with_delimiter(player.total_amount) %>点
+                  </span>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
-<% else %>
-  <div class="bg-white shadow-sm rounded-xl p-8 text-center text-gray-400 border border-gray-100">
-    <p>まだプレイヤーがいません</p>
-  </div>
+  <% else %>
+    <div class="bg-white shadow-sm rounded-xl p-8 text-center text-gray-400 border border-gray-100">
+      <p>この期間のデータはありません</p>
+    </div>
+  <% end %>
 <% end %>
 
 <div class="mt-4">
