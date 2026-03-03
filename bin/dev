@@ -5,6 +5,22 @@ if ! gem list foreman -i --silent; then
   gem install foreman
 fi
 
+# Start PostgreSQL if not running (and stop it on exit)
+STARTED_PG=false
+if ! pg_isready -q 2>/dev/null; then
+  echo "Starting PostgreSQL..."
+  brew services start postgresql@14
+  STARTED_PG=true
+fi
+
+cleanup() {
+  if [ "$STARTED_PG" = true ]; then
+    echo "Stopping PostgreSQL..."
+    brew services stop postgresql@14
+  fi
+}
+trap cleanup EXIT
+
 # Default to port 3000 if not specified
 export PORT="${PORT:-3000}"
 
@@ -13,4 +29,4 @@ export PORT="${PORT:-3000}"
 export RUBY_DEBUG_OPEN="true"
 export RUBY_DEBUG_LAZY="true"
 
-exec foreman start -f Procfile.dev "$@"
+foreman start -f Procfile.dev "$@"
