@@ -61,6 +61,60 @@ RSpec.describe "Leaderboards" do
       end
     end
 
+    context "with group defaults" do
+      let(:player_a) { create(:player, group: group, display_name: "Alice") }
+      let(:player_b) { create(:player, group: group, display_name: "Bob") }
+
+      before do
+        q4_session = create(:poker_session, group: group, created_by: user, played_on: Date.new(2025, 10, 15))
+        create(:session_result, poker_session: q4_session, player: player_a, amount: 500)
+
+        q1_session = create(:poker_session, group: group, created_by: user, played_on: Date.new(2026, 1, 20))
+        create(:session_result, poker_session: q1_session, player: player_b, amount: 300)
+      end
+
+      it "uses the group's 'all' period default when params are missing" do
+        group.update!(default_leaderboard_period: "all")
+
+        get group_leaderboard_path(group)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Alice")
+        expect(response.body).to include("Bob")
+      end
+
+      it "uses the group's 'latest' period default when params are missing" do
+        group.update!(default_leaderboard_period: "latest")
+
+        get group_leaderboard_path(group)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("2026Q1")
+      end
+
+      it "lets URL params override the group default" do
+        group.update!(default_leaderboard_period: "all")
+
+        get group_leaderboard_path(group), params: { quarter: "2025Q4" }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Alice")
+        expect(response.body).not_to include("Bob")
+      end
+
+      it "uses the group's min_sessions default when param is missing" do
+        group.update!(default_leaderboard_period: "all", default_leaderboard_min_sessions: 5)
+
+        get group_leaderboard_path(group)
+        # number_field :min_sessions, value: @min_sessions が group のデフォルトで初期化される
+        expect(response.body).to match(/name="min_sessions"[^>]*value="5"|value="5"[^>]*name="min_sessions"/)
+      end
+
+      it "lets URL min_sessions param override the group default" do
+        group.update!(default_leaderboard_period: "all", default_leaderboard_min_sessions: 5)
+
+        get group_leaderboard_path(group), params: { min_sessions: 2 }
+        expect(response.body).to match(/name="min_sessions"[^>]*value="2"|value="2"[^>]*name="min_sessions"/)
+      end
+    end
+
     context "with min_sessions filter" do
       it "filters players by minimum session count" do
         player = create(:player, group: group, display_name: "常連")
