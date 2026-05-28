@@ -60,6 +60,24 @@ RSpec.describe "PokerSessions" do
       end
     end
 
+    context "with decimal amount" do
+      let(:params) do
+        {
+          poker_session: {
+            played_on: "2025-01-15",
+            session_results_attributes: {
+              "0" => { player_id: player.id, amount: "123.5" }
+            }
+          }
+        }
+      end
+
+      it "stores the amount with one decimal place" do
+        post group_poker_sessions_path(group), params: params
+        expect(SessionResult.last.amount).to eq(BigDecimal("123.5"))
+      end
+    end
+
     context "with invalid params" do
       it "returns unprocessable entity" do
         post group_poker_sessions_path(group), params: { poker_session: { played_on: "" } }

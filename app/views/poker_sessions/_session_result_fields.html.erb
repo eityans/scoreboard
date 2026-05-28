@@ -6,7 +6,7 @@
         { class: "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" } %>
   </div>
   <div class="w-32">
-    <%= form.number_field :amount, placeholder: "収支(点)", class: "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-right focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" %>
+    <%= form.number_field :amount, step: 0.1, placeholder: "収支(点)", class: "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-right focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" %>
   </div>
   <button type="button" data-action="nested-form#remove" class="text-gray-400 hover:text-red-500 p-1 transition">
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
