@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_14_010739) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_28_100422) do
   create_schema "scoreboard"
 
   # These are extensions that must be enabled in order to support this database
@@ -63,7 +63,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_14_010739) do
   end
 
   create_table "scoreboard.session_results", force: :cascade do |t|
-    t.integer "amount", null: false
+    t.decimal "amount", precision: 12, scale: 1, null: false
     t.datetime "created_at", null: false
     t.bigint "player_id", null: false
     t.bigint "poker_session_id", null: false
