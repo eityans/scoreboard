@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_28_100422) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_28_110100) do
   create_schema "scoreboard"
 
   # These are extensions that must be enabled in order to support this database
@@ -19,6 +19,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_100422) do
   create_table "scoreboard.groups", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "created_by_id", null: false
+    t.integer "default_leaderboard_min_sessions", default: 3, null: false
+    t.string "default_leaderboard_period", default: "latest", null: false
     t.string "invitation_token", null: false
     t.string "name", null: false
     t.datetime "updated_at", null: false
