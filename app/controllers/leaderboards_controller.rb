@@ -14,9 +14,11 @@ class LeaderboardsController < ApplicationController
     all_sessions = @group.poker_sessions.order(:played_on)
     @quarters = all_sessions.pluck(:played_on).map { |d| quarter_key(d) }.uniq
 
-    @quarter = params[:quarter].presence
-    @quarter = @quarters.last if @quarter.nil?
-    @quarter = nil if @quarter == "all"
+    if params[:quarter].present?
+      @quarter = params[:quarter] == "all" ? nil : params[:quarter]
+    else
+      @quarter = @group.default_period_all? ? nil : @quarters.last
+    end
 
     @date_range = quarter_date_range(@quarter) if @quarter
   end
@@ -38,7 +40,7 @@ class LeaderboardsController < ApplicationController
   end
 
   def build_chart_data
-    @min_sessions = [ params.fetch(:min_sessions, 3).to_i, 1 ].max
+    @min_sessions = [ params.fetch(:min_sessions, @group.default_leaderboard_min_sessions).to_i, 1 ].max
     sessions = @group.poker_sessions.includes(session_results: :player).order(:played_on)
     sessions = sessions.where(played_on: @date_range) if @date_range
 

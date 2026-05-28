@@ -5,8 +5,12 @@ class Group < ApplicationRecord
   has_many :players, dependent: :destroy
   has_many :poker_sessions, dependent: :destroy
 
+  enum :default_leaderboard_period, { latest: "latest", all: "all" }, prefix: :default_period
+
   validates :name, presence: true
   validates :invitation_token, presence: true, uniqueness: true
+  validates :default_leaderboard_min_sessions,
+            numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 
   before_validation :generate_invitation_token, on: :create
 
