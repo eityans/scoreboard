@@ -21,8 +21,8 @@ cleanup() {
 }
 trap cleanup EXIT
 
-# Default to port 3000 if not specified
-export PORT="${PORT:-3000}"
+# Default to port 4000 if not specified
+export PORT="${PORT:-4000}"
 
 # Let the debug gem allow remote connections,
 # but avoid loading until `debugger` is called
