@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
-  before_action :set_group, only: :show
-  before_action :authorize_member!, only: :show
+  before_action :set_group, only: [ :show, :edit, :update ]
+  before_action :authorize_member!, only: [ :show, :edit, :update ]
 
   def index
     @groups = current_user.groups
@@ -25,6 +25,17 @@ class GroupsController < ApplicationController
     end
   end
 
+  def edit
+  end
+
+  def update
+    if @group.update(group_params)
+      redirect_to @group, notice: "グループの設定を更新しました"
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_group
@@ -36,6 +47,6 @@ class GroupsController < ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name)
+    params.require(:group).permit(:name, :default_leaderboard_period, :default_leaderboard_min_sessions)
   end
 end
