@@ -6,6 +6,7 @@ class Group < ApplicationRecord
   has_many :poker_sessions, dependent: :destroy
 
   enum :default_leaderboard_period, { latest: "latest", all: "all" }, prefix: :default_period
+  enum :amount_unit, { point: "point", bb: "bb" }, prefix: :amount_unit
 
   validates :name, presence: true
   validates :invitation_token, presence: true, uniqueness: true
