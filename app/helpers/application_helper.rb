@@ -11,4 +11,8 @@ module ApplicationHelper
 
     amount == amount.to_i ? amount.to_i.to_s : amount.to_s
   end
+
+  def amount_unit_label(group)
+    group.amount_unit_bb? ? "BB" : "点"
+  end
 end

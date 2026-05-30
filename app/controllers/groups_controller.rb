@@ -47,6 +47,6 @@ class GroupsController < ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name, :default_leaderboard_period, :default_leaderboard_min_sessions)
+    params.require(:group).permit(:name, :default_leaderboard_period, :default_leaderboard_min_sessions, :amount_unit)
   end
 end

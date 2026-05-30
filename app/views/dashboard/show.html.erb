@@ -45,7 +45,7 @@
               <span><%= session.session_results.size %>人参加</span>
               <% total = session.session_results.sum(&:amount) %>
               <% if total != 0 %>
-                <span class="text-xs text-yellow-600 font-medium">収支合計: <%= total > 0 ? "+" : "" %><%= format_amount(total) %>点</span>
+                <span class="text-xs text-yellow-600 font-medium">収支合計: <%= total > 0 ? "+" : "" %><%= format_amount(total) %> <%= amount_unit_label(session.group) %></span>
               <% end %>
             </div>
           <% end %>

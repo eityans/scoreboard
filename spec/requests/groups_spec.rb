@@ -113,6 +113,11 @@ RSpec.describe "Groups" do
         patch group_path(group), params: { group: { name: "renamed" } }
         expect(response).to redirect_to(group_path(group))
       end
+
+      it "updates amount_unit" do
+        patch group_path(group), params: { group: { amount_unit: "bb" } }
+        expect(group.reload.amount_unit).to eq("bb")
+      end
     end
 
     context "with invalid params" do
