@@ -13,7 +13,7 @@
         <div class="flex items-center justify-between py-2">
           <span class="font-medium text-gray-900"><%= result.player.display_name %></span>
           <span class="font-mono text-lg font-semibold <%= result.amount >= 0 ? 'text-green-600' : 'text-red-600' %>">
-            <%= result.amount >= 0 ? "+" : "" %><%= format_amount(result.amount) %> 点
+            <%= result.amount >= 0 ? "+" : "" %><%= format_amount(result.amount) %> <%= amount_unit_label(@poker_session.group) %>
           </span>
         </div>
       <% end %>
@@ -22,7 +22,7 @@
       <span class="font-semibold text-gray-700">合計</span>
       <% total = @session_results.sum(&:amount) %>
       <span class="font-mono font-semibold text-lg <%= total == 0 ? 'text-gray-500' : 'text-yellow-600' %>">
-        <%= total >= 0 ? "+" : "" %><%= format_amount(total) %> 点
+        <%= total >= 0 ? "+" : "" %><%= format_amount(total) %> <%= amount_unit_label(@poker_session.group) %>
       </span>
     </div>
   <% else %>

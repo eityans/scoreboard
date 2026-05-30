@@ -25,7 +25,7 @@
     <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-4 mb-6">
       <h2 class="text-sm font-medium text-gray-500 mb-2"><%= @quarter || "全期間" %> 収支推移</h2>
       <% if @chart_data.any? %>
-        <%= line_chart @chart_data, xtitle: "セッション", ytitle: "累計 (点)", points: false, curve: false, legend: "bottom", min: @chart_min, max: @chart_max, height: "500px",
+        <%= line_chart @chart_data, xtitle: "セッション", ytitle: "累計 (#{amount_unit_label(@group)})", points: false, curve: false, legend: "bottom", min: @chart_min, max: @chart_max, height: "500px",
               library: { scales: { x: { ticks: { stepSize: 1 } } } } %>
       <% else %>
         <p class="text-center text-gray-400 py-8">条件に該当するプレイヤーがいません</p>
@@ -63,7 +63,7 @@
                 <td class="px-4 py-3.5 text-right text-sm text-gray-400"><%= player.session_count %>回</td>
                 <td class="px-4 py-3.5 text-right">
                   <span class="font-mono font-semibold <%= player.total_amount.positive? ? 'text-green-600' : player.total_amount.negative? ? 'text-red-600' : 'text-gray-400' %>">
-                    <%= player.total_amount.positive? ? "+" : "" %><%= format_amount(player.total_amount) %>点
+                    <%= player.total_amount.positive? ? "+" : "" %><%= format_amount(player.total_amount) %><%= amount_unit_label(@group) %>
                   </span>
                 </td>
               </tr>

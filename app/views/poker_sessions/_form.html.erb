@@ -24,14 +24,14 @@
       <div data-nested-form-target="container" class="space-y-2">
         <% poker_session.session_results.each do |result| %>
           <%= form.fields_for :session_results, result do |result_form| %>
-            <%= render "poker_sessions/session_result_fields", form: result_form, players: players %>
+            <%= render "poker_sessions/session_result_fields", form: result_form, players: players, group: @group %>
           <% end %>
         <% end %>
       </div>
 
       <template data-nested-form-target="template">
         <%= form.fields_for :session_results, SessionResult.new, child_index: "NEW_RECORD" do |result_form| %>
-          <%= render "poker_sessions/session_result_fields", form: result_form, players: players %>
+          <%= render "poker_sessions/session_result_fields", form: result_form, players: players, group: @group %>
         <% end %>
       </template>
 
