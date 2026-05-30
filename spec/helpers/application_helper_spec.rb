@@ -32,4 +32,16 @@ RSpec.describe ApplicationHelper do
       expect(helper.amount_input_value(BigDecimal("100.5"))).to eq("100.5")
     end
   end
+
+  describe "#amount_unit_label" do
+    it "returns '点' for a group with point unit" do
+      group = build(:group, amount_unit: "point")
+      expect(helper.amount_unit_label(group)).to eq("点")
+    end
+
+    it "returns 'BB' for a group with bb unit" do
+      group = build(:group, amount_unit: "bb")
+      expect(helper.amount_unit_label(group)).to eq("BB")
+    end
+  end
 end
