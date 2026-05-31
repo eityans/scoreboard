@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+require "fileutils"
+
+ROOT = File.expand_path("..", __dir__)
+SRC = File.join(ROOT, "app/assets/images/icon.svg")
+
+unless File.exist?(SRC)
+  warn "Source SVG not found: #{SRC}"
+  exit 1
+end
+
+OUTPUTS = [
+  { dest: File.join(ROOT, "public/icon.png"), size: 512 },
+  { dest: File.join(ROOT, "public/icon-192.png"), size: 192 }
+].freeze
+
+def find_renderer
+  return :rsvg if system("which rsvg-convert > /dev/null 2>&1")
+  return :magick if system("which magick > /dev/null 2>&1")
+  return :convert if system("which convert > /dev/null 2>&1")
+
+  nil
+end
+
+renderer = find_renderer
+unless renderer
+  warn "No SVG-to-PNG converter found."
+  warn "Install one of:"
+  warn "  brew install librsvg     # provides rsvg-convert (recommended)"
+  warn "  brew install imagemagick # provides magick / convert"
+  exit 1
+end
+
+OUTPUTS.each do |out|
+  ok = case renderer
+       when :rsvg
+         system("rsvg-convert", "-w", out[:size].to_s, "-h", out[:size].to_s, SRC, "-o", out[:dest])
+       when :magick
+         system("magick", "-background", "none", "-density", "300", SRC, "-resize", "#{out[:size]}x#{out[:size]}", out[:dest])
+       when :convert
+         system("convert", "-background", "none", "-density", "300", SRC, "-resize", "#{out[:size]}x#{out[:size]}", out[:dest])
+       end
+  abort("Failed to render #{out[:dest]} with #{renderer}") unless ok
+  puts "Generated #{out[:dest]}"
+end
+
+FileUtils.cp(SRC, File.join(ROOT, "public/icon.svg"))
+puts "Copied #{File.join(ROOT, "public/icon.svg")}"
