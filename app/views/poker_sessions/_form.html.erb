@@ -35,28 +35,28 @@
         <% end %>
       </template>
 
-      <div class="flex flex-wrap gap-3 mt-3">
+      <div class="flex flex-col sm:flex-row gap-2 mt-3">
         <button type="button" data-action="nested-form#add"
-                class="text-blue-600 hover:text-blue-800 text-sm font-medium transition">
-          + 記録を追加
+                class="btn-outline-blue w-full sm:w-auto cursor-pointer">
+          + 参加者を追加
         </button>
         <button type="button" data-action="inline-player#toggle"
-                class="text-green-600 hover:text-green-800 text-sm font-medium transition">
+                class="btn-outline-green w-full sm:w-auto cursor-pointer">
           + 新しいプレイヤー
         </button>
       </div>
 
       <div data-inline-player-target="form" class="hidden mt-3 flex items-center gap-2">
         <input type="text" data-inline-player-target="input" data-action="keydown.enter->inline-player#submit"
-               placeholder="プレイヤー名" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition">
+               placeholder="プレイヤー名" class="flex-1 min-h-11 border border-gray-300 rounded-lg px-3 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition">
         <button type="button" data-action="inline-player#submit"
-                class="bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition cursor-pointer">追加</button>
+                class="btn-green cursor-pointer">追加</button>
         <button type="button" data-action="inline-player#toggle"
-                class="text-gray-400 hover:text-gray-600 text-sm transition">キャンセル</button>
+                class="btn-ghost cursor-pointer">キャンセル</button>
       </div>
     </div>
 
-    <%= form.submit poker_session.persisted? ? "更新する" : "記録する",
-        class: "w-full bg-blue-600 text-white py-2.5 px-4 rounded-lg hover:bg-blue-700 font-medium cursor-pointer transition" %>
+    <%= form.submit poker_session.persisted? ? "変更を保存する" : "セッションを保存する",
+        class: "btn-primary w-full cursor-pointer" %>
   <% end %>
 </div>
