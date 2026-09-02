@@ -1,1 +1,29 @@
 @import "tailwindcss";
+
+@utility btn {
+  @apply inline-flex items-center justify-center min-h-11 px-5 rounded-lg font-medium transition;
+}
+
+@utility btn-primary {
+  @apply btn bg-blue-600 text-white hover:bg-blue-700;
+}
+
+@utility btn-green {
+  @apply btn bg-green-600 text-white hover:bg-green-700;
+}
+
+@utility btn-neutral {
+  @apply btn bg-gray-100 text-gray-700 hover:bg-gray-200;
+}
+
+@utility btn-outline-blue {
+  @apply btn border border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100;
+}
+
+@utility btn-outline-green {
+  @apply btn border border-green-300 bg-green-50 text-green-700 hover:bg-green-100;
+}
+
+@utility btn-ghost {
+  @apply btn text-gray-500 hover:text-gray-700;
+}
