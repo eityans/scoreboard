@@ -38,7 +38,7 @@
       <div class="flex flex-col sm:flex-row gap-2 mt-3">
         <button type="button" data-action="nested-form#add"
                 class="btn-outline-blue w-full sm:w-auto cursor-pointer">
-          + 記録を追加
+          + 参加者を追加
         </button>
         <button type="button" data-action="inline-player#toggle"
                 class="btn-outline-green w-full sm:w-auto cursor-pointer">
@@ -56,7 +56,7 @@
       </div>
     </div>
 
-    <%= form.submit poker_session.persisted? ? "更新する" : "記録する",
+    <%= form.submit poker_session.persisted? ? "変更を保存する" : "セッションを保存する",
         class: "btn-primary w-full cursor-pointer" %>
   <% end %>
 </div>
