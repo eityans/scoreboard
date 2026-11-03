@@ -24,6 +24,7 @@ class PokerSession < ApplicationRecord
 
   def finish!
     with_lock do
+      next true if completed?
       next false unless finishable?
 
       completed!
@@ -33,7 +34,10 @@ class PokerSession < ApplicationRecord
   end
 
   def sync_results!
-    return unless recorded_live? && completed?
+    return unless recorded_live?
+
+    lock!
+    return unless completed?
 
     current = ledger
     if current.any_seated?

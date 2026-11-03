@@ -34,6 +34,15 @@ RSpec.describe PokerSession, type: :model do
       expect(results).to be_empty
     end
 
+    it "succeeds for a stale instance whose session another member already finished" do
+      record(alice, "join", 300)
+      record(alice, "cash_out", 300)
+      stale = described_class.find(poker_session.id)
+      poker_session.finish!
+
+      expect(stale.finish!).to be(true)
+    end
+
     it "refuses to finish without any join" do
       expect(poker_session.finish!).to be(false)
     end
@@ -65,6 +74,17 @@ RSpec.describe PokerSession, type: :model do
       poker_session.session_entries.where(player: bob).destroy_all
 
       expect(results).to eq(alice.id => 200)
+    end
+
+    it "recomputes results even when the entry holds a stale session" do
+      stale_entry = SessionEntry.find(cash_out.id)
+      stale_entry.poker_session.update_column(:status, "in_progress")
+      stale_entry.poker_session.status = "in_progress"
+      described_class.find(poker_session.id).update_column(:status, "completed")
+
+      stale_entry.update!(amount: 900)
+
+      expect(results).to eq(alice.id => 600)
     end
 
     it "can be destroyed with its entries and results" do
