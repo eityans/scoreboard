@@ -17,6 +17,17 @@ RSpec.describe "PokerSessions" do
     end
   end
 
+  describe "GET /groups/:group_id/poker_sessions with a live session" do
+    it "labels the live session and counts players from entries" do
+      live = create(:poker_session, :live, group: group, created_by: user)
+      create(:session_entry, poker_session: live, player: player, kind: "join", amount: 300)
+
+      get group_poker_sessions_path(group)
+
+      expect(response.body).to include("ゲーム中", "1人参加")
+    end
+  end
+
   describe "GET /groups/:group_id/poker_sessions/:id" do
     let(:poker_session) { create(:poker_session, group: group, created_by: user) }
 

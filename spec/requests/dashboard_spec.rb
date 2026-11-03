@@ -14,6 +14,16 @@ RSpec.describe "Dashboard" do
 
       before { sign_in user }
 
+      it "labels a live session" do
+        group = create(:group, created_by: user)
+        create(:membership, user: user, group: group, role: "owner")
+        create(:poker_session, :live, group: group, created_by: user)
+
+        get root_path
+
+        expect(response.body).to include("ゲーム中")
+      end
+
       it "returns a successful response" do
         get root_path
         expect(response).to have_http_status(:ok)

@@ -4,7 +4,7 @@ class DashboardController < ApplicationController
     @recent_sessions = PokerSession
       .joins(group: :memberships)
       .where(memberships: { user_id: current_user.id })
-      .includes(:group, :session_results)
+      .includes(:group, :session_results, :session_entries)
       .order(played_on: :desc)
       .limit(10)
   end

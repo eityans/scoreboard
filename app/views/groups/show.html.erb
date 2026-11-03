@@ -19,8 +19,11 @@
         <% recent_sessions.each do |session| %>
           <%= link_to group_poker_session_path(@group, session), class: "block py-3 hover:bg-gray-50 -mx-2 px-2 rounded-lg transition" do %>
             <div class="flex items-center justify-between">
-              <span class="font-medium text-gray-900"><%= session.played_on.strftime("%Y/%m/%d") %></span>
-              <span class="text-xs text-gray-400"><%= session.session_results.count %>人参加</span>
+              <span class="font-medium text-gray-900">
+                <%= session.played_on.strftime("%Y/%m/%d") %>
+                <%= render "poker_sessions/live_badge", poker_session: session %>
+              </span>
+              <span class="text-xs text-gray-400"><%= session.participant_count %>人参加</span>
             </div>
             <% if session.note.present? %>
               <p class="text-xs text-gray-400 mt-0.5"><%= truncate(session.note, length: 40) %></p>

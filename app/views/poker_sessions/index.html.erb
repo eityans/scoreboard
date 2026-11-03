@@ -17,11 +17,12 @@
         <div class="flex items-center justify-between">
           <div>
             <span class="font-medium text-gray-900"><%= session.played_on.strftime("%Y/%m/%d") %></span>
+            <%= render "poker_sessions/live_badge", poker_session: session %>
             <% if session.note.present? %>
               <span class="text-sm text-gray-400 ml-2"><%= truncate(session.note, length: 30) %></span>
             <% end %>
           </div>
-          <span class="text-sm text-gray-400"><%= session.session_results.count %>人参加</span>
+          <span class="text-sm text-gray-400"><%= session.participant_count %>人参加</span>
         </div>
       <% end %>
     <% end %>

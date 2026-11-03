@@ -129,6 +129,19 @@ RSpec.describe "Leaderboards" do
     end
   end
 
+  context "with a session in progress" do
+    it "does not offer the quarter of a live session" do
+      completed = create(:poker_session, group: group, created_by: user, played_on: Date.new(2025, 10, 15))
+      create(:session_result, poker_session: completed, player: create(:player, group: group), amount: 100)
+      create(:poker_session, :live, group: group, created_by: user, played_on: Date.new(2026, 1, 20))
+
+      get group_leaderboard_path(group)
+
+      expect(response.body).to include("2025Q4")
+      expect(response.body).not_to include("2026Q1")
+    end
+  end
+
   context "when user is not a member" do
     let(:other_group) { create(:group) }
 
