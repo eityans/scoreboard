@@ -9,6 +9,10 @@ class PokerSessionsController < ApplicationController
 
   def show
     @session_results = @poker_session.session_results.includes(:player).order("amount DESC")
+    return unless @poker_session.recorded_live?
+
+    @ledger = @poker_session.ledger
+    @session_entries = @poker_session.session_entries.includes(:player, :recorded_by).order(created_at: :desc, id: :desc)
   end
 
   def new
@@ -26,6 +30,13 @@ class PokerSessionsController < ApplicationController
       @players = @group.players.active.order(:display_name)
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def start
+    poker_session = @group.poker_sessions.create!(
+      played_on: Date.current, status: :in_progress, recorded_live: true, created_by: current_user
+    )
+    redirect_to group_poker_session_path(@group, poker_session)
   end
 
   def edit

@@ -1,0 +1,25 @@
+<div class="bg-white shadow-sm rounded-xl border border-gray-100 p-5 mb-6">
+  <h2 class="text-lg font-semibold mb-4">卓にいる人</h2>
+  <% if ledger.rows.any? %>
+    <div class="divide-y divide-gray-50">
+      <% ledger.rows.each do |row| %>
+        <div class="flex items-center justify-between py-3">
+          <div>
+            <span class="font-medium text-gray-900"><%= row.player.display_name %></span>
+            <p class="text-xs text-gray-400">
+              <% if row.seated %>
+                着席中
+              <% elsif row.last_cash_out %>
+                退出済み（<%= format_amount(row.last_cash_out) %> <%= amount_unit_label(@group) %>）
+              <% end %>
+              <% if row.rebuy_count.positive? %>・リバイ <%= row.rebuy_count %> 回<% end %>
+            </p>
+          </div>
+          <span class="font-mono text-gray-700">入れた合計 <%= format_amount(row.buy_in_total) %> <%= amount_unit_label(@group) %></span>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-gray-400 text-center py-4 text-sm">まだ誰も参加していません</p>
+  <% end %>
+</div>

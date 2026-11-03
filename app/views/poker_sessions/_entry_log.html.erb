@@ -1,0 +1,27 @@
+<div class="bg-white shadow-sm rounded-xl border border-gray-100 p-5 mb-6">
+  <h2 class="text-lg font-semibold mb-4">記録</h2>
+  <% if session_entries.any? %>
+    <div class="divide-y divide-gray-50">
+      <% session_entries.each do |entry| %>
+        <div class="flex items-center justify-between gap-2 py-2">
+          <div class="min-w-0">
+            <p class="text-sm text-gray-900">
+              <span class="text-gray-400 font-mono"><%= session_entry_time(entry) %></span>
+              <%= entry.player.display_name %>
+              <span class="text-gray-500"><%= session_entry_kind_label(entry.kind) %></span>
+              <span class="font-mono"><%= format_amount(entry.amount) %> <%= amount_unit_label(@group) %></span>
+            </p>
+            <p class="text-xs text-gray-400">記録: <%= entry.recorded_by.display_name %></p>
+          </div>
+          <div class="flex shrink-0 items-center">
+            <%= link_to "直す", edit_group_poker_session_session_entry_path(@group, @poker_session, entry), class: "btn-ghost px-3 text-sm" %>
+            <%= button_to "消す", group_poker_session_session_entry_path(@group, @poker_session, entry), method: :delete,
+                  data: { turbo_confirm: "この記録を消しますか？" }, class: "btn-ghost px-3 text-sm text-red-500 cursor-pointer" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-gray-400 text-center py-4 text-sm">まだ記録がありません</p>
+  <% end %>
+</div>

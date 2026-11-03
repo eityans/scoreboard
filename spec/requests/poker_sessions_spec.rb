@@ -86,6 +86,28 @@ RSpec.describe "PokerSessions" do
     end
   end
 
+  describe "POST /groups/:group_id/poker_sessions/start" do
+    it "creates a live session for today" do
+      post start_group_poker_sessions_path(group)
+
+      session = PokerSession.last
+      expect(session).to have_attributes(in_progress?: true, recorded_live?: true, played_on: Date.current, created_by: user)
+      expect(response).to redirect_to(group_poker_session_path(group, session))
+    end
+  end
+
+  describe "GET /groups/:group_id/poker_sessions/:id for a live session" do
+    let(:poker_session) { create(:poker_session, :live, group: group, created_by: user) }
+
+    it "shows the entry log" do
+      create(:session_entry, poker_session: poker_session, player: player, recorded_by: user, kind: "join", amount: 300)
+
+      get group_poker_session_path(group, poker_session)
+
+      expect(response.body).to include(user.display_name, player.display_name)
+    end
+  end
+
   describe "GET /groups/:group_id/poker_sessions/:id/edit" do
     let(:poker_session) { create(:poker_session, group: group, created_by: user) }
 
