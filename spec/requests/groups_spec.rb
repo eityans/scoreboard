@@ -22,6 +22,13 @@ RSpec.describe "Groups" do
         get group_path(group)
         expect(response).to have_http_status(:ok)
       end
+
+      it "offers starting a session and recording results only" do
+        get group_path(group)
+
+        expect(response.body).to include(start_group_poker_sessions_path(group), "セッションを開始")
+        expect(response.body).to include(new_group_poker_session_path(group), "結果だけを記録する")
+      end
     end
 
     context "when user is not a member" do
