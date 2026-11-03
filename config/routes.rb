@@ -18,5 +18,11 @@ Rails.application.routes.draw do
 
   resources :invitations, only: [ :show ], param: :token
 
+  if Rails.env.local?
+    namespace :dev do
+      resource :session, only: [ :create ]
+    end
+  end
+
   root "dashboard#show"
 end

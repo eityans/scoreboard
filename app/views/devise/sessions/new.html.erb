@@ -13,5 +13,21 @@
       </svg>
       <span>Google でログイン</span>
     <% end %>
+
+    <% if Rails.env.development? %>
+      <div class="mt-8 pt-6 border-t border-gray-100 text-left">
+        <p class="text-xs text-gray-400 mb-2">開発用ログイン（<code>bin/rails db:seed</code> で作成）</p>
+        <% developers = User.where(provider: User::DEVELOPER_PROVIDER).order(:id) %>
+        <% if developers.any? %>
+          <div class="space-y-2">
+            <% developers.each do |user| %>
+              <%= button_to user.display_name, dev_session_path, params: { user_id: user.id }, class: "btn-neutral w-full cursor-pointer" %>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-sm text-gray-500">開発用ユーザーがいません</p>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 </div>
