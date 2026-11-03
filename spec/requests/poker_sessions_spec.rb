@@ -15,6 +15,13 @@ RSpec.describe "PokerSessions" do
       get group_poker_sessions_path(group)
       expect(response).to have_http_status(:ok)
     end
+
+    it "offers starting a session and recording results only" do
+      get group_poker_sessions_path(group)
+
+      expect(response.body).to include("セッションを開始", "結果だけを記録する")
+      expect(response.body).not_to include("ゲームを始める", "新規記録")
+    end
   end
 
   describe "GET /groups/:group_id/poker_sessions with a live session" do

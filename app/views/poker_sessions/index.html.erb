@@ -2,11 +2,13 @@
   <%= link_to "← #{@group.name}", group_path(@group), class: "text-sm text-gray-500 hover:text-gray-700" %>
 </div>
 
-<div class="flex items-center justify-between mb-6">
-  <h1 class="text-2xl font-bold">セッション一覧</h1>
-  <div class="flex gap-2">
-    <%= button_to "ゲームを始める", start_group_poker_sessions_path(@group), class: "btn-green cursor-pointer" %>
-    <%= link_to "新規記録", new_group_poker_session_path(@group), class: "btn-primary" %>
+<div class="mb-6">
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-bold">セッション一覧</h1>
+    <%= button_to "セッションを開始", start_group_poker_sessions_path(@group), class: "btn-primary cursor-pointer" %>
+  </div>
+  <div class="flex justify-end">
+    <%= link_to "結果だけを記録する ›", new_group_poker_session_path(@group), class: "inline-flex items-center min-h-11 text-sm text-gray-400 hover:text-gray-600" %>
   </div>
 </div>
 
