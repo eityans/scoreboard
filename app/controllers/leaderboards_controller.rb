@@ -11,7 +11,7 @@ class LeaderboardsController < ApplicationController
   private
 
   def resolve_quarter
-    all_sessions = @group.poker_sessions.order(:played_on)
+    all_sessions = @group.poker_sessions.completed.order(:played_on)
     @quarters = all_sessions.pluck(:played_on).map { |d| quarter_key(d) }.uniq
 
     if params[:quarter].present?
@@ -41,7 +41,7 @@ class LeaderboardsController < ApplicationController
 
   def build_chart_data
     @min_sessions = [ params.fetch(:min_sessions, @group.default_leaderboard_min_sessions).to_i, 1 ].max
-    sessions = @group.poker_sessions.includes(session_results: :player).order(:played_on)
+    sessions = @group.poker_sessions.completed.includes(session_results: :player).order(:played_on)
     sessions = sessions.where(played_on: @date_range) if @date_range
 
     cumulative = Hash.new(0)

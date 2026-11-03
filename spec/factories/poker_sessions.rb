@@ -4,5 +4,10 @@ FactoryBot.define do
     association :created_by, factory: :user
     played_on { Date.current }
     note { nil }
+
+    trait :live do
+      status { "in_progress" }
+      recorded_live { true }
+    end
   end
 end

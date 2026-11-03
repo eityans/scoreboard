@@ -7,7 +7,11 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker, defaults: { format: "js" }
 
   resources :groups, only: [ :index, :show, :new, :create, :edit, :update ] do
-    resources :poker_sessions
+    resources :poker_sessions do
+      post :start, on: :collection
+      patch :finish, on: :member
+      resources :session_entries, only: [ :new, :create, :edit, :update, :destroy ]
+    end
     resources :players, only: [ :index, :new, :create, :destroy ]
     resource :leaderboard, only: [ :show ]
   end

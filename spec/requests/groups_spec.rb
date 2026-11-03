@@ -69,6 +69,18 @@ RSpec.describe "Groups" do
     end
   end
 
+  describe "GET /groups/:id with a live session" do
+    it "labels the live session" do
+      group = create(:group, created_by: user)
+      create(:membership, user: user, group: group, role: "owner")
+      create(:poker_session, :live, group: group, created_by: user)
+
+      get group_path(group)
+
+      expect(response.body).to include("ゲーム中")
+    end
+  end
+
   describe "GET /groups/:id/edit" do
     context "when user is a member" do
       let(:group) { create(:group, created_by: user) }

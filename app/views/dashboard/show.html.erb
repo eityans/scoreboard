@@ -16,7 +16,7 @@
           <%= link_to group, class: "block bg-white shadow-sm rounded-xl p-4 hover:shadow-md transition border border-gray-100" do %>
             <div class="flex items-center justify-between mb-1">
               <h3 class="font-semibold text-gray-900"><%= group.name %></h3>
-              <span class="text-xs text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full"><%= group.poker_sessions.size %>回</span>
+              <span class="text-xs text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full"><%= group.poker_sessions.select(&:completed?).size %>回</span>
             </div>
             <p class="text-sm text-gray-500">メンバー: <%= group.users.size %>人</p>
           <% end %>
@@ -38,11 +38,14 @@
         <% @recent_sessions.each do |session| %>
           <%= link_to group_poker_session_path(session.group, session), class: "block p-4 hover:bg-gray-50 transition first:rounded-t-xl last:rounded-b-xl" do %>
             <div class="flex items-center justify-between mb-1">
-              <span class="font-medium text-gray-900"><%= session.played_on.strftime("%Y/%m/%d") %></span>
+              <span class="font-medium text-gray-900">
+                <%= session.played_on.strftime("%Y/%m/%d") %>
+                <%= render "poker_sessions/live_badge", poker_session: session %>
+              </span>
               <span class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full"><%= session.group.name %></span>
             </div>
             <div class="flex items-center justify-between text-sm text-gray-500">
-              <span><%= session.session_results.size %>人参加</span>
+              <span><%= session.participant_count %>人参加</span>
               <% total = session.session_results.sum(&:amount) %>
               <% if total != 0 %>
                 <span class="text-xs text-yellow-600 font-medium">収支合計: <%= total > 0 ? "+" : "" %><%= format_amount(total) %> <%= amount_unit_label(session.group) %></span>

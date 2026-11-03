@@ -1,0 +1,5 @@
+<div class="grid grid-cols-3 gap-2 mb-6">
+  <% SessionEntriesController::RECORDABLE_KINDS.each do |kind| %>
+    <%= link_to session_entry_kind_label(kind), new_group_poker_session_session_entry_path(@group, @poker_session, kind: kind), class: "btn-outline-blue" %>
+  <% end %>
+</div>

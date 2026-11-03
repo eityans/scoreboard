@@ -5,30 +5,50 @@
   <% end %>
 </div>
 
-<div class="bg-white shadow-sm rounded-xl border border-gray-100 p-5 mb-6">
-  <h2 class="text-lg font-semibold mb-4">収支</h2>
-  <% if @session_results.any? %>
-    <div class="space-y-3">
-      <% @session_results.each do |result| %>
-        <div class="flex items-center justify-between py-2">
-          <span class="font-medium text-gray-900"><%= result.player.display_name %></span>
-          <span class="font-mono text-lg font-semibold <%= result.amount >= 0 ? 'text-green-600' : 'text-red-600' %>">
-            <%= result.amount >= 0 ? "+" : "" %><%= format_amount(result.amount) %> <%= amount_unit_label(@poker_session.group) %>
-          </span>
-        </div>
-      <% end %>
-    </div>
-    <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
-      <span class="font-semibold text-gray-700">合計</span>
-      <% total = @session_results.sum(&:amount) %>
-      <span class="font-mono font-semibold text-lg <%= total == 0 ? 'text-gray-500' : 'text-yellow-600' %>">
-        <%= total >= 0 ? "+" : "" %><%= format_amount(total) %> <%= amount_unit_label(@poker_session.group) %>
-      </span>
-    </div>
-  <% else %>
-    <p class="text-gray-400 text-center py-4 text-sm">結果が記録されていません</p>
+<% if @poker_session.in_progress? %>
+  <%= render "seats", ledger: @ledger %>
+  <%= render "entry_actions" %>
+  <%= render "entry_log", session_entries: @session_entries %>
+  <div class="mb-6">
+    <%= button_to "セッションを終了する", finish_group_poker_session_path(@group, @poker_session), method: :patch,
+          disabled: !@poker_session.finishable?,
+          data: { turbo_confirm: "セッションを終了しますか？" },
+          class: "btn-primary w-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" %>
+    <% unless @poker_session.finishable? %>
+      <p class="text-xs text-gray-400 mt-2 text-center">全員の退出を記録すると終了できます</p>
+    <% end %>
+  </div>
+<% else %>
+  <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-5 mb-6">
+    <h2 class="text-lg font-semibold mb-4">収支</h2>
+    <% if @session_results.any? %>
+      <div class="space-y-3">
+        <% @session_results.each do |result| %>
+          <div class="flex items-center justify-between py-2">
+            <span class="font-medium text-gray-900"><%= result.player.display_name %></span>
+            <span class="font-mono text-lg font-semibold <%= result.amount >= 0 ? 'text-green-600' : 'text-red-600' %>">
+              <%= result.amount >= 0 ? "+" : "" %><%= format_amount(result.amount) %> <%= amount_unit_label(@poker_session.group) %>
+            </span>
+          </div>
+        <% end %>
+      </div>
+      <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+        <span class="font-semibold text-gray-700">合計</span>
+        <% total = @session_results.sum(&:amount) %>
+        <span class="font-mono font-semibold text-lg <%= total == 0 ? 'text-gray-500' : 'text-yellow-600' %>">
+          <%= total >= 0 ? "+" : "" %><%= format_amount(total) %> <%= amount_unit_label(@poker_session.group) %>
+        </span>
+      </div>
+    <% else %>
+      <p class="text-gray-400 text-center py-4 text-sm">結果が記録されていません</p>
+    <% end %>
+  </div>
+
+  <% if @poker_session.recorded_live? %>
+    <%= render "entry_actions" %>
+    <%= render "entry_log", session_entries: @session_entries %>
   <% end %>
-</div>
+<% end %>
 
 <div class="flex flex-wrap items-center gap-3">
   <%= link_to "編集", edit_group_poker_session_path(@group, @poker_session), class: "bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 text-sm font-medium transition" %>
