@@ -92,7 +92,7 @@ end
 - 単位の表示は既存の `amount_unit_label(group)` を使う
 - 記録の並び順は `created_at` で決める。記録を直しても並び順は変わらない
 - 誰が記録したかを `recorded_by` に残し、記録欄に表示する。記録を直した人は残さない
-- セッションを消すと、そのセッションの記録も消す（`PokerSession` に `has_many :session_entries, dependent: :destroy`）
+- セッションを消すと、そのセッションの記録も消す（`PokerSession` に `has_many :session_entries, dependent: :delete_all`）。記録のコールバックを走らせないのは、セッションを消している最中に `session_results` を作り直さないためである
 - 記録を持つプレイヤーは削除できない（`Player` に `has_many :session_entries, dependent: :restrict_with_error`）。`session_results` を持つプレイヤーと同じ扱いである
 
 ### 収支の計算
