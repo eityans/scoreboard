@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_31_100100) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_03_100100) do
   create_schema "scoreboard"
 
   # These are extensions that must be enabled in order to support this database
@@ -59,10 +59,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_31_100100) do
     t.bigint "group_id", null: false
     t.text "note"
     t.date "played_on", null: false
+    t.boolean "recorded_live", default: false, null: false
+    t.string "status", default: "completed", null: false
     t.datetime "updated_at", null: false
     t.index ["created_by_id"], name: "index_poker_sessions_on_created_by_id"
     t.index ["group_id", "played_on"], name: "index_poker_sessions_on_group_id_and_played_on"
     t.index ["group_id"], name: "index_poker_sessions_on_group_id"
+  end
+
+  create_table "scoreboard.session_entries", force: :cascade do |t|
+    t.decimal "amount", precision: 12, scale: 1, null: false
+    t.datetime "created_at", null: false
+    t.string "kind", null: false
+    t.bigint "player_id", null: false
+    t.bigint "poker_session_id", null: false
+    t.bigint "recorded_by_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["player_id"], name: "index_session_entries_on_player_id"
+    t.index ["poker_session_id"], name: "index_session_entries_on_poker_session_id"
+    t.index ["recorded_by_id"], name: "index_session_entries_on_recorded_by_id"
   end
 
   create_table "scoreboard.session_results", force: :cascade do |t|
@@ -97,6 +112,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_31_100100) do
   add_foreign_key "scoreboard.players", "scoreboard.users"
   add_foreign_key "scoreboard.poker_sessions", "scoreboard.groups"
   add_foreign_key "scoreboard.poker_sessions", "scoreboard.users", column: "created_by_id"
+  add_foreign_key "scoreboard.session_entries", "scoreboard.players"
+  add_foreign_key "scoreboard.session_entries", "scoreboard.poker_sessions"
+  add_foreign_key "scoreboard.session_entries", "scoreboard.users", column: "recorded_by_id"
   add_foreign_key "scoreboard.session_results", "scoreboard.players"
   add_foreign_key "scoreboard.session_results", "scoreboard.poker_sessions"
 

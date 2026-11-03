@@ -2,6 +2,7 @@ class Player < ApplicationRecord
   belongs_to :group
   belongs_to :user, optional: true
   has_many :session_results, dependent: :restrict_with_error
+  has_many :session_entries, dependent: :restrict_with_error
 
   scope :active, -> { where(discarded_at: nil) }
   scope :discarded, -> { where.not(discarded_at: nil) }
