@@ -108,6 +108,45 @@ RSpec.describe "PokerSessions" do
     end
   end
 
+  describe "PATCH /groups/:group_id/poker_sessions/:id/finish" do
+    let(:poker_session) { create(:poker_session, :live, group: group, created_by: user) }
+
+    before { create(:session_entry, poker_session: poker_session, player: player, kind: "join", amount: 300) }
+
+    it "shows the finish button on the live screen" do
+      get group_poker_session_path(group, poker_session)
+
+      expect(response.body).to include("セッションを終了する")
+    end
+
+    it "completes the session once everyone has cashed out" do
+      create(:session_entry, poker_session: poker_session, player: player, kind: "cash_out", amount: 400)
+
+      patch finish_group_poker_session_path(group, poker_session)
+
+      expect(poker_session.reload).to be_completed
+      expect(poker_session.session_results.sole.amount).to eq(100)
+      expect(response).to redirect_to(group_poker_session_path(group, poker_session))
+    end
+
+    it "keeps the session in progress while someone is seated" do
+      patch finish_group_poker_session_path(group, poker_session)
+
+      expect(poker_session.reload).to be_in_progress
+      expect(flash[:alert]).to eq("全員の退出を記録してから終了してください")
+    end
+
+    it "does nothing for an already completed session" do
+      create(:session_entry, poker_session: poker_session, player: player, kind: "cash_out", amount: 400)
+      patch finish_group_poker_session_path(group, poker_session)
+
+      expect {
+        patch finish_group_poker_session_path(group, poker_session)
+      }.not_to change(SessionResult, :count)
+      expect(response).to redirect_to(group_poker_session_path(group, poker_session))
+    end
+  end
+
   describe "GET /groups/:group_id/poker_sessions/:id/edit" do
     let(:poker_session) { create(:poker_session, group: group, created_by: user) }
 

@@ -9,6 +9,15 @@
   <%= render "seats", ledger: @ledger %>
   <%= render "entry_actions" %>
   <%= render "entry_log", session_entries: @session_entries %>
+  <div class="mb-6">
+    <%= button_to "セッションを終了する", finish_group_poker_session_path(@group, @poker_session), method: :patch,
+          disabled: !@poker_session.finishable?,
+          data: { turbo_confirm: "セッションを終了しますか？" },
+          class: "btn-primary w-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" %>
+    <% unless @poker_session.finishable? %>
+      <p class="text-xs text-gray-400 mt-2 text-center">全員の退出を記録すると終了できます</p>
+    <% end %>
+  </div>
 <% else %>
   <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-5 mb-6">
     <h2 class="text-lg font-semibold mb-4">収支</h2>

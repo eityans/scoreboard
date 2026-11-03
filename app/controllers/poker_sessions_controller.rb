@@ -1,7 +1,7 @@
 class PokerSessionsController < ApplicationController
   before_action :set_group
   before_action :authorize_member!
-  before_action :set_poker_session, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_poker_session, only: [ :show, :edit, :update, :destroy, :finish ]
 
   def index
     @poker_sessions = @group.poker_sessions.order(played_on: :desc)
@@ -37,6 +37,15 @@ class PokerSessionsController < ApplicationController
       played_on: Date.current, status: :in_progress, recorded_live: true, created_by: current_user
     )
     redirect_to group_poker_session_path(@group, poker_session)
+  end
+
+  def finish
+    path = group_poker_session_path(@group, @poker_session)
+    if @poker_session.completed? || @poker_session.finish!
+      redirect_to path, notice: "セッションを終了しました"
+    else
+      redirect_to path, alert: "全員の退出を記録してから終了してください"
+    end
   end
 
   def edit
