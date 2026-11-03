@@ -2,6 +2,6 @@ FactoryBot.define do
   factory :player do
     group
     user { nil }
-    display_name { Faker::Name.name }
+    sequence(:display_name) { |n| "Player #{n}" }
   end
 end
