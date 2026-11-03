@@ -44,6 +44,19 @@ class PokerSession < ApplicationRecord
     end
   end
 
+  def correct_results!(amounts_by_player_id, recorded_by:)
+    transaction do
+      results = session_results.index_by(&:player_id)
+      amounts_by_player_id.each do |player_id, amount|
+        result = results[player_id.to_i]
+        new_amount = BigDecimal(amount.to_s, exception: false)
+        next if result.nil? || new_amount.nil? || new_amount == result.amount
+
+        session_entries.create!(player_id: result.player_id, kind: "adjustment", amount: new_amount - result.amount, recorded_by: recorded_by)
+      end
+    end
+  end
+
   def participant_count
     in_progress? ? session_entries.map(&:player_id).uniq.size : session_results.size
   end

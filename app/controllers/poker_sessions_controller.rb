@@ -53,6 +53,8 @@ class PokerSessionsController < ApplicationController
   end
 
   def update
+    return update_live_session if @poker_session.recorded_live?
+
     if @poker_session.update(poker_session_params)
       redirect_to group_poker_session_path(@group, @poker_session), notice: "セッションを更新しました"
     else
@@ -78,6 +80,21 @@ class PokerSessionsController < ApplicationController
 
   def authorize_member!
     redirect_to groups_path, alert: "このグループにはアクセスできません" unless current_user.groups.include?(@group)
+  end
+
+  def update_live_session
+    PokerSession.transaction do
+      @poker_session.update!(params.require(:poker_session).permit(:played_on, :note))
+      @poker_session.correct_results!(result_corrections, recorded_by: current_user) if @poker_session.completed?
+    end
+    redirect_to group_poker_session_path(@group, @poker_session), notice: "セッションを更新しました"
+  rescue ActiveRecord::RecordInvalid
+    render :edit, status: :unprocessable_entity
+  end
+
+  def result_corrections
+    player_ids = @poker_session.session_results.pluck(:player_id).map(&:to_s)
+    params.fetch(:results, {}).permit(*player_ids).to_h
   end
 
   def poker_session_params
