@@ -17,36 +17,36 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_100100) do
   enable_extension "pg_catalog.plpgsql"
 
   create_table "scoreboard.groups", force: :cascade do |t|
-    t.string "amount_unit", default: "point", null: false
-    t.datetime "created_at", null: false
-    t.bigint "created_by_id", null: false
-    t.integer "default_leaderboard_min_sessions", default: 3, null: false
-    t.string "default_leaderboard_period", default: "latest", null: false
-    t.string "invitation_token", null: false
     t.string "name", null: false
+    t.string "invitation_token", null: false
+    t.bigint "created_by_id", null: false
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "default_leaderboard_period", default: "latest", null: false
+    t.integer "default_leaderboard_min_sessions", default: 3, null: false
+    t.string "amount_unit", default: "point", null: false
     t.index ["created_by_id"], name: "index_groups_on_created_by_id"
     t.index ["invitation_token"], name: "index_groups_on_invitation_token", unique: true
   end
 
   create_table "scoreboard.memberships", force: :cascade do |t|
-    t.datetime "created_at", null: false
+    t.bigint "user_id", null: false
     t.bigint "group_id", null: false
     t.string "role", default: "member", null: false
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
     t.index ["group_id"], name: "index_memberships_on_group_id"
     t.index ["user_id", "group_id"], name: "index_memberships_on_user_id_and_group_id", unique: true
     t.index ["user_id"], name: "index_memberships_on_user_id"
   end
 
   create_table "scoreboard.players", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "discarded_at"
-    t.string "display_name", null: false
     t.bigint "group_id", null: false
-    t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.string "display_name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
     t.index ["group_id", "display_name"], name: "index_players_on_group_id_and_display_name", unique: true
     t.index ["group_id", "user_id"], name: "index_players_on_group_id_and_user_id", unique: true, where: "(user_id IS NOT NULL)"
     t.index ["group_id"], name: "index_players_on_group_id"
@@ -54,26 +54,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_100100) do
   end
 
   create_table "scoreboard.poker_sessions", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.bigint "created_by_id", null: false
     t.bigint "group_id", null: false
-    t.text "note"
     t.date "played_on", null: false
-    t.boolean "recorded_live", default: false, null: false
-    t.string "status", default: "completed", null: false
+    t.text "note"
+    t.bigint "created_by_id", null: false
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status", default: "completed", null: false
+    t.boolean "recorded_live", default: false, null: false
     t.index ["created_by_id"], name: "index_poker_sessions_on_created_by_id"
     t.index ["group_id", "played_on"], name: "index_poker_sessions_on_group_id_and_played_on"
     t.index ["group_id"], name: "index_poker_sessions_on_group_id"
   end
 
   create_table "scoreboard.session_entries", force: :cascade do |t|
+    t.bigint "poker_session_id", null: false
+    t.bigint "player_id", null: false
+    t.bigint "recorded_by_id", null: false
+    t.string "kind", null: false
     t.decimal "amount", precision: 12, scale: 1, null: false
     t.datetime "created_at", null: false
-    t.string "kind", null: false
-    t.bigint "player_id", null: false
-    t.bigint "poker_session_id", null: false
-    t.bigint "recorded_by_id", null: false
     t.datetime "updated_at", null: false
     t.index ["player_id"], name: "index_session_entries_on_player_id"
     t.index ["poker_session_id"], name: "index_session_entries_on_poker_session_id"
@@ -81,10 +81,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_100100) do
   end
 
   create_table "scoreboard.session_results", force: :cascade do |t|
+    t.bigint "poker_session_id", null: false
+    t.bigint "player_id", null: false
     t.decimal "amount", precision: 12, scale: 1, null: false
     t.datetime "created_at", null: false
-    t.bigint "player_id", null: false
-    t.bigint "poker_session_id", null: false
     t.datetime "updated_at", null: false
     t.index ["player_id"], name: "index_session_results_on_player_id"
     t.index ["poker_session_id", "player_id"], name: "index_session_results_on_poker_session_id_and_player_id", unique: true
@@ -92,14 +92,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_100100) do
   end
 
   create_table "scoreboard.users", force: :cascade do |t|
-    t.string "avatar_url"
-    t.datetime "created_at", null: false
-    t.string "display_name", default: "", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
-    t.string "provider", default: "google_oauth2", null: false
     t.datetime "remember_created_at"
+    t.string "provider", default: "google_oauth2", null: false
     t.string "uid", default: "", null: false
+    t.string "display_name", default: "", null: false
+    t.string "avatar_url"
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
